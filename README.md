@@ -1,7 +1,7 @@
 # DigitalesFeldbuch
 Überarbeitete Version des Feldbuchs
 
-Starten des Feldbuchs im Development Modus:
+Starten des Feldbuchs im Development Modus über Commandozeile im "frontend"-Folder:
 
 **npm run dev**
 
