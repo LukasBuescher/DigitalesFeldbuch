@@ -48,8 +48,6 @@
           default:
             returnTitle = this.$route.meta.title; break;
         }
-        //return (this.$route.meta.title + "asda")
-        //return (VueCookies.get('currentExcavation').title)
         console.log(this.$route.name)
         return returnTitle
       }

@@ -1,111 +1,63 @@
 <template>
-  <div id="excavationsWrapper">
-    <div class="buttonContainer"><ion-button color="secondary" expand="block" @click="createExcavation()">Neue Ausgrabung</ion-button></div>
-    <!-- List of Text Items -->
-    <h2>Zugehörige Ausgrabungen</h2>
-    <p v-if="excavations.length === 0">
-      <ion-icon name="information-circle"></ion-icon> Es wurden bisher noch keine Ausgrabungen angelegt.
-    </p>
-    <ion-list>
-      <ion-item-sliding v-for="item in excavations" v-bind:key="item._id" lines="inset">
-
-        <ion-item-options side="start">
-          <ion-item-option @click="selectExcavation(item)">Öffnen</ion-item-option>
-        </ion-item-options>
-
-        <ion-item detail="true" @click="selectExcavation(item)" >
-          <ion-label>
-            <h2> {{item.title}} </h2>
-            <p> Von: {{item.excavationStartDate}} </p>
-            <p> Bis: {{item.excavationEndDate}} </p>
-          </ion-label>
-        </ion-item>
-
-        <ion-item-options side="end">
-          <ion-item-option @click="modifyExcavation(item)">
-            <ion-icon slot="icon-only" name="settings"></ion-icon>
-          </ion-item-option>
-          <ion-item-option color="danger" @click="deleteExcavation(item)">
-            <ion-icon slot="icon-only" name="trash"></ion-icon>
-          </ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-
-  </div>
+  <v-form>
+    <div v-if="!new_excavation">
+      <v-subheader v-if="excavations.length === 0"> Bisher wurden dem Projekt keine Grabungen hinzugefügt</v-subheader>
+      <v-subheader v-else>Zugehörige Grabungen</v-subheader>
+      <v-list>
+          <template v-for="(excavation, i) in excavations" >
+            <v-list-item :key="i" v-on:click="selectExcavation(excavation._id)">
+              <v-list-item-content>
+                <v-list-item-title> {{excavation.title}} </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider v-if="i !== excavations.length - 1"></v-divider>
+          </template>
+        </v-list>
+      <v-btn @click="new_excavation = true" color="secondary"> Grabung hinzufügen</v-btn>
+    </div>
+    <div v-else>
+      <ExcavationCreation excavation_id="new" v-on:save_excavation="$emit(`save_excavation`)" v-on:cancel_creation="new_excavation = false" :campaign_id="campaign_id"/>
+    </div>
+  </v-form>
 </template>
 
 <script>
 import VueCookies from 'vue-cookies'
-import {path} from '../adress.js'
-
+import {excavationsdb} from '../adress.js'
+import ExcavationCreation from "./ExcavationForm";
 
 export default {
   name: 'ExcavationsOverview',
+  components: {ExcavationCreation},
   methods: {
     getExcavations: function () {
-      var PouchDB = require('pouchdb-browser').default // doesn'T work without '.default' despite documentation, solution found in some github issuetracker
-      var excavationsdb = new PouchDB('excavations_database')
-      var excavationsremoteDB = new PouchDB(path + '/excavations')
-
-      excavationsdb.sync(excavationsremoteDB, {
-        live: true,
-        retry: true
-      }).on('change', function (change) {
-        // yo, something changed!
-      }).on('paused', function (info) {
-        // replication was paused, usually because of a lost connection
-      }).on('active', function (info) {
-        // replication was resumed
-        // eslint-disable-next-line handle-callback-err
-      }).on('error', function (err) {
-        // totally unhandled error (shouldn't happen)
-        console.log('whyyy')
-        console.log(err)
-      })
-      var context = this // to enable accessing the 'campaigns' variable inside submethods
+      var context = this
       excavationsdb.allDocs({
         include_docs: true,
         attachments: true
       }).then(function (result) {
         for (let item of result.rows) {
-          if (item.doc.campaignId === VueCookies.get('currentCampaign')._id) context.excavations.push(item.doc)
+          if (item.doc.campaign_id === context.campaign_id) context.excavations.push(item.doc)
         }
       }).catch(function (err) {
         console.log(err)
       })
-      context.excavations.sort()
     },
-    selectExcavation: function (item) {
-      VueCookies.set('currentExcavation', item)
-      // eslint-disable-next-line standard/object-curly-even-spacing
-      this.$router.push({ name: 'ExcavationInfo'})
-    }, // TODO
-
-    createExcavation: function () {
-      // eslint-disable-next-line standard/object-curly-even-spacing
-      this.$router.push({ name: 'CreateExcavation'})
-    }, // TODO
-
-    modifyExcavation: function (item) {
-      // eslint-disable-next-line standard/object-curly-even-spacing
-      this.$router.push({ name: 'ModifyExcavation', params: { _id: item._id }})
-    }, // TODO
-
-    deleteExcavation: function (item) { } // TODO: change campaign
+    selectExcavation: function (item_id) {
+      this.$emit(`save_excavation`)
+      VueCookies.set('currentExcavation', item_id)
+      this.$router.push({ name: 'ExcavationOverview', params: { excavation_id: item_id}})
+    }
   },
   beforeMount () {
-      this.getExcavations()
+    this.campaign_id = this.$route.params.campaign_id
+    this.getExcavations()
   },
-    even: function(arr) {
-        // Set slice() to avoid to generate an infinite loop!
-        return arr.slice().sort(function(a, b) {
-            return a.item - b.item
-        })
-    },
   data: function () {
     return {
       excavations: [],
+      new_excavation: false,
+      campaign_id: ''
     }
   }
 
@@ -114,11 +66,4 @@ export default {
 </script>
 
 <style scoped>
-  #excavationsWrapper{
-    border-top: 1px solid var(--ion-color-medium-tint);
-  }
-
-  .buttonContainer{
-    padding: 0 150px;
-  }
 </style>

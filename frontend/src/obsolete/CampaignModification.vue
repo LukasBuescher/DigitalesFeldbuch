@@ -1,9 +1,10 @@
 <template>
+<div>
   <div>
     <form>
       <ion-item>
-        <ion-label position="stacked">Name der Ausgrabung</ion-label>
-        <ion-input v-on:ionInput="title=$event.target.value" placeholder="Geben Sie die Bezeichnung der Ausgrabung ein" ></ion-input>
+        <ion-label position="stacked">Name des Projekts</ion-label>
+        <ion-input id="title-input" v-on:ionInput="title=$event.target.value" :value=title></ion-input>
       </ion-item>
 
       <div class="contactPersonWrapper">
@@ -16,7 +17,8 @@
             <ion-text>
               {{item.name}}
             </ion-text>
-            <ion-icon name="close"></ion-icon>
+
+            <ion-icon name="close" ></ion-icon>
           </ion-button>
 
         </ion-list>
@@ -47,7 +49,7 @@
           <ion-list>
             <ion-item>Einen neuen Ansprechpartner anlegen</ion-item>
             <ion-item>
-              <ion-label position="stacked">Name des Ansprechpartners (Nachname, Vorname)</ion-label>
+              <ion-label position="stacked">Name des Ansprechpartners  (Nachname, Vorname)</ion-label>
               <ion-input placeholder="Hier den Name eintragen"
                          v-on:ionInput="contactPersonName=$event.target.value"></ion-input>
             </ion-item>
@@ -76,51 +78,16 @@
         </div>
       </div>
 
-
       <ion-item>
-        <ion-label position="stacked">Organisation</ion-label>
-        <ion-input v-on:ionInput="organisation=$event.target.value" placeholder="Tragen Sie hier die zugehörige Organisation ein"></ion-input>
+        <ion-label position="stacked">Kurzbeschreibung</ion-label>
+        <ion-textarea id="description-textarea" v-on:ionInput="description=$event.target.value" rows="14" :value=description></ion-textarea>
       </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Auftraggeber</ion-label>
-        <ion-input v-on:ionInput="customer=$event.target.value" placeholder="Tragen Sie hier den Auftraggeber der Ausgrabung ein"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Grabungsfokus</ion-label>
-        <ion-textarea v-on:ionInput="excavationFocus=$event.target.value" rows="5" placeholder="Beschreiben Sie hier den Fokus dieser Ausgrabung"></ion-textarea>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Ort</ion-label>
-        <ion-textarea v-on:ionInput="location=$event.target.value" rows="2" placeholder="Geben Sie hier an, wo die Ausgrabung stattfindet"></ion-textarea>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Beginn der Ausgrabung</ion-label>
-        <ion-input v-on:ionInput="excavationStartDate=$event.target.value" placeholder="Geben Sie hier das Startdatum der Ausgrabung an"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Ende der Ausgrabung</ion-label>
-        <ion-input v-on:ionInput="excavationEndDate=$event.target.value" placeholder="Geben Sie hier das geplante Enddatum der Ausgrabung an"></ion-input>
-      </ion-item>
-
-      <!--
-      <ion-item>
-        <ion-label position="stacked">Ist die Ausgrabung aktiv?</ion-label>
-        <div >
-          <ion-toggle checked></ion-toggle>
-        </div>
-      </ion-item>
-      -->
 
       <ion-button color="secondary" @click="logForm()"> Speichern </ion-button>  <!--type="submit"-->
       <ion-button @click="goBack()"> Abbrechen </ion-button>
     </form>
-
   </div>
+</div>
 </template>
 
 <script>
@@ -128,13 +95,13 @@ import VueCookies from 'vue-cookies'
 import {path} from '../adress.js'
 
 var PouchDB = require('pouchdb-browser').default // doesn'T work without '.default' despite documentation, solution found in some github issuetracker
-var excavationsdb = new PouchDB('excavations_database') // creates new database or opens existing one
-var excavationsremoteDB = new PouchDB(path + '/excavations')
+var campaignsdb = new PouchDB('campaigns_database') // creates new database or opens existing onevar remoteDB = new PouchDB('http://192.168.159.1:5984/sections')
+var remotecampaignsDB = new PouchDB(path + '/campaigns')
 
 var contactPersonDb = new PouchDB('contactPerson_database')
 var remotecontactPersonDb = new PouchDB(path + '/contactPersons')
 
-excavationsdb.sync(excavationsremoteDB, {
+campaignsdb.sync(remotecampaignsDB, {
   live: true,
   retry: true
 }).on('change', function (change) {
@@ -146,22 +113,35 @@ excavationsdb.sync(excavationsremoteDB, {
 // eslint-disable-next-line handle-callback-err
 }).on('error', function (err) {
   // totally unhandled error (shouldn't happen)
-  console.log('whyyy')
   console.log(err)
 })
 
+contactPersonDb.sync(remotecontactPersonDb, {
+  live: true,
+  retry: true
+}).on('change', function (change) {
+  // yo, something changed!
+}).on('paused', function (info) {
+  // replication was paused, usually because of a lost connection
+}).on('active', function (info) {
+  // replication was resumed
+// eslint-disable-next-line handle-callback-err
+}).on('error', function (err) {
+  // totally unhandled error (shouldn't happen)
+  console.log(err)
+})
+
+let context
 export default {
-  name: 'ExcavationCreation',
+  name: 'CampaignModification',
   data: function () {
     return {
-      title: '',
-      organisation: '',
-      customer: '',
-      excavationFocus: '',
-      location: '',
-      excavationStartDate: '',
-      excavationEndDate: '',
-      campaignId: '',
+      title: ' ',
+      description: ' ',
+      // eslint-disable-next-line vue/no-reserved-keys
+      _id: 0,
+      // eslint-disable-next-line vue/no-reserved-keys
+      _rev: 0,
       overlayDisplay: 'none',
       contactPersonName: '',
       contactPersonEmail: '',
@@ -173,6 +153,20 @@ export default {
   },
   beforeMount () {
     this.getContactPersons()
+  },
+  created () { // This entire code block is a very ugly but working solution to get the database data conceirning titles and descriptions into the ionic-input fields. They are not supporting according vue methods for some reason
+    context = this
+    context._id = VueCookies.get('currentCampaign')._id
+    campaignsdb.get(context._id).then(function (result) {
+      context.title = result.title
+      context.description = result.description
+      context._rev = result._rev
+      context.affiliatedContactPersons = result.affiliatedContactPersons
+      console.log(context.title + ' ' + context.description + ' ' + context._rev)
+    })
+    this.title = context.title
+    this.description = context.description
+    this._rev = context._rev
   },
   methods: {
     removeElement(item)
@@ -196,12 +190,12 @@ export default {
       }).catch(function (err) {
         console.log(err)
       })
-      context.availableContactPersons.sort()
     },
     addExistingContactPersonToCampaign: function (item) {
       this.hideOverlay()
+      console.log("addContactPersonToCampaign")
       this.affiliatedContactPersons.push(item)
-      this.affiliatedContactPersons.sort()
+
     },
     addNewContactPersonToCampaign: function () {
       this.hideOverlay()
@@ -225,7 +219,6 @@ export default {
           console.log(err)
         }
       })
-
     },
     hideOverlay: function () {
       this.overlayDisplay = 'none';
@@ -234,31 +227,31 @@ export default {
       this.overlayDisplay = 'block';
     },
     logForm: function () {
-      let router = this.$router // the correct 'this' is not reachable inside the dp.put call back, so it gets put into a variable.
+      console.log('form')
+      let router = this.$router // the corre'form'is' is not reachable inside the dp.put call back, so it gets put into a variable.
       // eslint-disable-next-line standard/object-curly-even-spacing
-      let excavation = {
-        _id: this.title + new Date().toISOString(),
-        title: this.title,
-        organisation: this.organisation,
-        customer: this.customer,
-        excavationFocus: this.excavationFocus,
-        location: this.location,
-        excavationEndDate: this.excavationEndDate,
-        excavationStartDate: this.excavationStartDate,
-        campaignId: VueCookies.get('currentCampaign')._id,
-        affiliatedContactPersons: this.affiliatedContactPersons
+      let campaign = {
+        _id: context._id,
+        title: context.title,
+        description: context.description,
+        _rev: context._rev,
+        affiliatedContactPersons: context.affiliatedContactPersons
       }
-      excavationsdb.put(excavation, function callback (err, result) {
+      campaignsdb.put(campaign, function callback (err, result) {
         if (!err) {
-          console.log('Successfully posted a excarvation')
+          console.log('Successfully posted a campaign! ')
           // eslint-disable-next-line standard/object-curly-even-spacing
-          router.push({ name: 'CampaignOverview'})
+          // router.push({ name: 'CampaignsOverview'})
+          router.go(-1) // dynamic and fun
+        } else {
+          console.log(err)
         }
       })
     },
     goBack: function () {
       // eslint-disable-next-line standard/object-curly-even-spacing
-      this.$router.push({ name: 'CampaignOverview'})
+      // this.$router.push({ name: 'CampaignsOverview'}) // commented out because its static
+      this.$router.go(-1) // dynamic and fun
     }
   }
 }

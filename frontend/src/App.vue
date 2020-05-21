@@ -1,31 +1,50 @@
-/* eslint-disable */
 <template>
-  <div id="app">
-    <div class="navWrapOuter">
-      <Navigation msg="test"/>
-    </div>
-
-    <div id="page-wrap">
-      <AppHeader/>
-      <!-- <img src="./assets/logo.png"> -->
-      <router-view></router-view>
+  <v-app id="app">
+    <head>
+      <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+      <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    </head>
+    <v-app-bar dark app flat color="#594743">
+      <v-btn icon v-on:click="goback" x-large> <v-icon>mdi-arrow-left</v-icon> </v-btn>
+      <v-toolbar-title> {{toolbar_title}} </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn icon @click.stop="navdrawer = !navdrawer" x-large> <v-icon>mdi-menu</v-icon></v-btn>
+    </v-app-bar>
+    <v-content>
+      <Navigation :drawer="navdrawer"/>
+      <router-view @view="onViewChange"></router-view>
       <AppFooter/>
-    </div>
-  </div>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
 import Navigation from './components/Navigation.vue'
-import AppHeader from './components/AppHeader.vue'
 import AppFooter from './components/AppFooter.vue'
-import VueCookies from 'vue-cookies'
-
+import {initializedatabases} from './adress'
 
 export default {
   name: 'App',
+  created() {
+    initializedatabases()
+  },
+  data: function () {
+    return {
+      backbutton_link: '',
+      navdrawer: false,
+      toolbar_title: 'Digitales Feldbuch'
+    }
+  },
+  methods: {
+    goback () {
+      this.$router.go(-1)
+    },
+    onViewChange(title) {
+      this.toolbar_title = title
+    }
+  },
   components: {
     Navigation,
-    AppHeader,
     AppFooter
   }
 }
@@ -33,6 +52,7 @@ export default {
 </script>
 
 <style>
+
 
   :root {
 
@@ -124,7 +144,6 @@ export default {
   }
 
   body {
-    background-color: var(--ion-color-light);
     position: static;
     max-height: none;
     height: auto;

@@ -1,37 +1,27 @@
 <template>
   <div>
     <h1>Schnitt bearbeiten</h1>
-    <div>
-      <form>
-        <ion-item>
-          <ion-label position="stacked">Name des Schnitts</ion-label>
-          <ion-input id="title-input" v-on:ionInput="title=$event.target.value" :value=title></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">Datum</ion-label>
-          <ion-input v-on:ionInput="date=$event.target.value" :value=date></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">Schnittleiter</ion-label>
-          <ion-input v-on:ionInput="leader=$event.target.value" :value=leader></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">StartNiveau</ion-label>
-          <ion-textarea v-on:ionInput="startNiveau=$event.target.value" :value=startNiveau></ion-textarea>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">EndNiveau</ion-label>
-          <ion-textarea v-on:ionInput="endNiveau=$event.target.value" :value=endNiveau></ion-textarea>
-        </ion-item>
-
-        <ion-button color="secondary" @click="logForm()"> Speichern </ion-button>  <!--type="submit"-->
-        <ion-button @click="goBack()"> Abbrechen </ion-button>
-      </form>
-    </div>
+    <v-app>
+        <v-container>
+        <v-text-field v-model="title" label="Schnittname" hint="  Geben Sie die Bezeichnung des Schnitts ein"></v-text-field>
+        <v-row>
+          <v-col>
+            <v-text-field label="Anlegungsdatum" hint="Geben sie hier das Datum ein, an dem der Schnitt angelegt wurde" v-model="excavated_date"></v-text-field>
+            <v-btn v-on:click="change_excavated_date" color="secondary"> Datum wählen </v-btn>
+            <v-text-field label="Eintragungsdatum" hint="Geben sie hier das Datum ein, an dem der Schnitt in das Feldbuch eingetragen wurde" v-model="date"></v-text-field>
+            <v-btn v-on:click="change_date" color="secondary"> Datum wählen </v-btn>
+          </v-col>
+          <v-col><v-date-picker v-model="selected_date" :show-current="true" :full-width="true"></v-date-picker></v-col>
+        </v-row>
+        <v-text-field v-model="leader" label="Schnittleiter" hint="Tragen Sie hier den Leiter des Schnitts ein"></v-text-field>
+        <v-text-field v-model="startNiveau" label="Startniveau" hint="Geben Sie hier das Startniveau des Schnitts an"></v-text-field>
+        <v-text-field v-model="endNiveau" label="Endniveau" hint="Geben Sie hier das Endniveau des Schnitts an"></v-text-field>
+        <!--v-file-input id="input_image" v-model="section_image" accept="image/*" multiple label="Bild anhängen" prepend-icon="mdi-camera" ></v-file-input-->
+        <v-btn v-on:click="logForm" color="secondary" >Speichern</v-btn>
+        <v-btn v-on:click="goBack" color="primary">Abbrechen</v-btn>
+        </v-container>
+        <!--v-btn v-on:click="addimage" color="primary">Hinzufügen</v-btn-->
+    </v-app>
   </div>
 </template>
 
@@ -42,6 +32,8 @@ import {path} from '../adress.js'
 var PouchDB = require('pouchdb-browser').default // doesn'T work without '.default' despite documentation, solution found in some github issuetracker
 var sectiondb = new PouchDB('sections_database') // creates new database or opens existing var db = new PouchDB('sections_database') // creates new database or opens existing one
 var sectionremoteDB = new PouchDB(path + '/sections')
+var imagedb = new PouchDB('imagedb')
+
 
 sectiondb.sync(sectionremoteDB, {
   live: true,
@@ -63,15 +55,18 @@ export default {
   name: 'SectionModification',
   data: function () {
     return {
+      section_image: [],
       title: '',
       leader: '',
       date: '',
+      excavated_date: '',
+      selected_date: '',
       startNiveau: '',
       endNiveau: '',
       // eslint-disable-next-line vue/no-reserved-keys
       _id: 0,
       // eslint-disable-next-line vue/no-reserved-keys
-      _rev: 0
+      _rev: 0,
     }
   },
   created () { // This entire code block is a very ugly but working solution to get the database data conceirning titles and descriptions into the ionic-input fields. They are not supporting according vue methods for some reason
@@ -104,7 +99,7 @@ export default {
         startNiveau: context.startNiveau,
         endNiveau: context.endNiveau,
         _rev: context._rev,
-        excavationId: VueCookies.get('currentExcavation')._id
+        excavationId: VueCookies.get('currentExcavation')._id,
       }
       sectiondb.put(section, function callback (err, result) {
         if (!err) {
@@ -116,6 +111,27 @@ export default {
           console.log(err)
         }
       })
+    },
+    change_excavated_date: function () {
+      this.excavated_date = this.selected_date
+    },
+    change_date: function () {
+      this.date = this.selected_date
+    },
+    addimage: function () {
+      context = this
+      imagedb.put({
+        _id: new Date(),
+        object: VueCookies.get('currentSection').id,
+        _attachments: {
+          filename: {
+            type: context.section_image.type,
+            data: context.section_image
+          }
+        }
+      }).catch(function (err) {
+        console.log(err);
+      });
     },
     goBack: function () {
       // eslint-disable-next-line standard/object-curly-even-spacing

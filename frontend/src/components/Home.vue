@@ -1,184 +1,75 @@
 <template>
-  <div class="contentWrap">
+    <v-row justify="center">
+      <v-card outlined class="ma-2" color="#BC987D" v-on:click="toCampaign" dark>
+          <v-img :src="require('../assets/logo_campaign.png')" max-height="200" max-width="200" class="text--white align-end" contain></v-img>
+        <v-card-title class="justify-center"> Projekt </v-card-title>
+      </v-card>
 
-    <div class="titleWrap"><ion-text >Willkommen im Digitalen Feldbuch.</ion-text></div>
+    <v-card :disabled="!excavationIsSet" class="ma-2" color="#BC987D" v-on:click="toExcavation(0)" dark>
+          <v-img :src="require('../assets/logo_excavation.png')" max-height="200" max-width="200" class="text--white align-end" contain> </v-img>
+          <v-card-title class="justify-center"> Ausgrabung </v-card-title>
+      </v-card>
 
-    <router-link to="/campaigns">
-      <div class="tileWrapper">
-      <div class="tileDiv" id="campaignTile"><img src="../assets/logo_campaign.png"></div>
-        Übergeordnetes Projekt
-  </div>
-    </router-link>
+      <v-card :disabled="!excavationIsSet" class="ma-2" color="#BC987D" v-on:click="toExcavation(1)" dark>
+          <v-img :src="require('../assets/logo_section.png')" max-height="200" max-width="200" class="text--white align-end" contain></v-img>
+           <v-card-title class="justify-center"> Schnitte </v-card-title>
+      </v-card>
 
-    <router-link to="/excavation">
-      <div class="tileWrapper">
-      <div class="tileDiv" id="excavationTile" v-if="campaignIsSet"><img src="../assets/logo_excavation.png"></div>
-      <div class="tileDiv inactiveTile" id="excavationTile" v-else><div class="tileDiv" id="campaignTile"><img src="../assets/logo_excavation.png"></div></div>
-      Ausgrabung
-      </div>
-    </router-link>
-    <router-link to="/excavation/sections">
-      <div class="tileWrapper">
-      <div class="tileDiv" id="sectionsTile" v-if="excavationIsSet"><img src="../assets/logo_section.png"></div>
-      <div class="tileDiv inactiveTile" id="sectionsTile" v-else><img src="../assets/logo_section.png"></div>
-      Schnitt
-    </div>
-    </router-link>
-    <router-link to="/constructedObjects">
-      <div class="tileWrapper">
-        <div class="tileDiv" id="constructedObjectsTile"><img src="../assets/logo_constructedObject.png"></div>
-        Baulicher Bestand
-      </div>
-    </router-link>
-    <router-link to="/excavation/structures">
-      <div class="tileWrapper">
-      <div class="tileDiv" id="structuresTile" v-if="excavationIsSet"><img src="../assets/logo_structure.png"></div>
-      <div class="tileDiv inactiveTile" id="structuresTile" v-else><img src="../assets/logo_structure.png"></div>
-      Befund (SE)
-      </div>
-    </router-link>
-    <router-link to="/excavation/finds">
-      <div class="tileWrapper">
-      <div class="tileDiv" id="findsTile" v-if="excavationIsSet"><img src="../assets/logo_find.png"></div>
-      <div class="tileDiv inactiveTile" id="findsTile" v-else><img src="../assets/logo_find.png"></div>
-      Fund
-    </div>
-    </router-link>
-    <router-link to="/excavation/probes">
-      <div class="tileWrapper">
-      <div class="tileDiv" id="probesTile" v-if="excavationIsSet"><img src="../assets/logo_probe.png"></div>
-      <div class="tileDiv inactiveTile" id="probesTile" v-else><img src="../assets/logo_probe.png"></div>
-      Probe
-      </div>
-    </router-link>
-    <router-link to="/viewer3d">
-      <div class="tileWrapper">
-        <div class="tileDiv" id="viewer3dTile"><img src="../assets/logo_3d.png"></div>
-        3D Viewer
-      </div>
-    </router-link>
+      <v-card :disabled="!excavationIsSet" class="ma-2" color="#BC987D" v-on:click="toExcavation(2)" dark>
+          <v-img :src="require('../assets/logo_structure.png')" max-height="200" max-width="200" class="text--white align-end" contain></v-img>
+          <v-card-title class="justify-center"> Befunde </v-card-title>
+      </v-card>
 
+      <v-card :disabled="!excavationIsSet" class="ma-2" color="#BC987D" v-on:click="toExcavation(3)" dark>
+          <v-img :src="require('../assets/logo_find.png')" max-height="200" max-width="200" class="text--white align-end" contain></v-img>
+          <v-card-title class="justify-center"> Funde </v-card-title>
+      </v-card>
 
-  </div>
+      <v-card :disabled="!excavationIsSet" class="ma-2" color="#BC987D" v-on:click="toExcavation(4)" dark>
+          <v-img :src="require('../assets/logo_probe.png')" max-height="200" max-width="200" class="text--white align-end" contain></v-img>
+          <v-card-title class="justify-center"> Proben </v-card-title>
+      </v-card>
+    </v-row>
+
 </template>
 
 <script>
- // import Modal from './HelloWorld.vue'
  import VueCookies from 'vue-cookies'
+ import CampaignOverview from "../obsolete/CampaignOverview";
   export default {
     data: function (){
       return {
         excavationIsSet: false,
-        campaignIsSet: false
+        excavation_id: '',
+        campaignIsSet: false,
+        campaign_id: ''
       }
     },
     created () {
-      if (VueCookies.get('currentExcavation') !== null) {
+      this.excavation_id = VueCookies.get('currentExcavation')
+      if (this.excavation_id !== null) {
         this.excavationIsSet = true
       }
-      if (VueCookies.get('currentCampaign') !== null) {
+      this.campaign_id = VueCookies.get('currentCampaign')
+      if (this.campaign_id !== null){
         this.campaignIsSet = true
       }
+      this.$emit('view','Digitales Feldbuch')
     },
     methods: {
-      /*openModal() {
-        return this.$ionic.modalController
-          .create({
-            component: Modal,
-            componentProps: {
-              data: {
-                content: 'New Content',
-              },
-              propsData: {
-                title: 'New title',
-              },
-            },
-          })
-          .then(m => m.present())
+      toCampaign: function (){
+        if (this.campaignIsSet){
+          this.$router.push({ name: 'CampaignCreation', params: { campaign_id: this.campaign_id}})
+        }else {
+          this.$router.push({name: 'CampaignsOverview'})
+        }
       },
-      dismissModal(){
-  console.log("dismissModal called")
-  }*/
-  }
+      toExcavation: function (excavation_tab) {
+        VueCookies.set('excavationTab', excavation_tab)
+        this.$router.push({ name: 'ExcavationOverview', params: { excavation_id: this.excavation_id }})
+      }
+    }
   }
 </script>
 <style scoped>
-
-  .titleWrap{
-    margin-top: 20px;
-    margin-bottom: 30px
-  }
-
-  div.contentWrap{
-    padding: 10px
-  }
-
-  .tileDiv{
-
-    width: 140px;
-    height: 140px;
-    display: inline-block;
-    background-color: #898078;
-    color: white;
-  }
-
-  .tileWrapper
-  {
-    margin: 8px;
-    width: 140px;
-    height: 140px;
-    display: inline-block;
-  }
-
-  .tileDiv#structuresTile,.tileDiv#sectionsTile
-  {
-    background-color: #AB9E92;
-  }
-
-  .tileDiv#excavationTile
-  {
-    background-color: #898078;
-  }
-
-  .tileDiv#probesTile, .tileDiv#constructedObjectsTile
-  {
-    background-color: #C3A894;
-  }
-
-  .tileDiv#findsTile,.tileDiv#campaignTile
-  {
-    background-color: #BC987D;
-  }
-
-  .tileDiv.inactiveTile
-  {
-    background-color: lightgrey !important;
-  }
-
-
-
-  @media screen and (min-width: 768px) {
-    .tileDiv {
-      width: 210px;
-      height: 210px;
-    }
-
-    .tileWrapper
-    {
-      margin: 10px;
-      width: 210px;
-      height: 210px;
-      display: inline-block;
-    }
-
-    .titleWrap {
-      margin-top: 50px;
-      margin-bottom: 70px
-    }
-
-    div.contentWrap {
-      padding: 20px
-    }
-
-  }
-  </style>
+</style>

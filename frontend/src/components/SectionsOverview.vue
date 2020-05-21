@@ -1,72 +1,44 @@
 <template>
-  <div id="sectionsWrapper" >
-    <!-- List of Text Items -->
-    <h1>Übersicht der Schnitte</h1>
-    <p v-if="sections.length === 0">
-      <ion-icon name="information-circle"></ion-icon> Es wurden bisher noch keine Schnitte dokumentiert.
-    </p>
-    <div class="buttonContainer"><ion-button color="secondary" expand="block" @click="createSection()">Neuer Schnitt</ion-button></div>
-    <ion-list>
-      <ion-item-sliding v-for="item in even(sections)" v-bind:key="item._id" lines="inset">
-
-        <ion-item-options side="start">
-          <ion-item-option @click="selectSection(item)">Öffnen</ion-item-option>
-        </ion-item-options>
-
-        <ion-item detail="true" @click="selectSection(item)" >
-          <ion-label>
-            <h2> {{item.title}} </h2>
-          </ion-label>
-        </ion-item>
-
-        <ion-item-options side="end">
-          <ion-item-option @click="modifySection(item)">
-            <ion-icon slot="icon-only" name="settings"></ion-icon>
-          </ion-item-option>
-          <ion-item-option color="danger" @click="deleteSection(item)">
-            <ion-icon slot="icon-only" name="trash"></ion-icon>
-          </ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-
-  </div>
+  <v-form>
+    <v-list>
+      <template v-for="(section, i) in sections" v-if="!select_section" >
+        <v-list-item :key="i" v-on:click="modifySection(section._id)">
+          <v-list-item-content>
+            <v-list-item-title> {{section.title}} </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider v-if="i !== sections.length - 1"></v-divider>
+      </template>
+      <template v-for="(section2, j) in sections" v-if="select_section">
+        <v-list-item :key="j" v-on:click="selectSection(section2)">
+          <v-list-item-content>
+            <v-list-item-title> {{section2.title}} </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider v-if="j !== sections.length - 1"></v-divider>
+      </template>
+    </v-list>
+    <v-btn v-if="!select_section" v-on:click="modifySection('new')" color="primary"> Schnitt hinzufügen</v-btn>
+  </v-form>
 
 </template>
 
 <script>
-import VueCookies from 'vue-cookies'
-import {path} from '../adress.js'
+import {sectionsdb} from '../adress.js'
+import VueCookies from "vue-cookies";
 export default {
   name: 'SectionsOverview',
   methods: {
     getSections: function () {
-      var PouchDB = require('pouchdb-browser').default // doesn'T work without '.default' despite documentation, solution found in some github issuetracker
-      var sectiondb = new PouchDB('sections_database')
-      var sectionremoteDB = new PouchDB(path + '/sections')
-
-      sectiondb.sync(sectionremoteDB, {
-        live: true,
-        retry: true
-      }).on('change', function (change) {
-        // yo, something changed!
-      }).on('paused', function (info) {
-        // replication was paused, usually because of a lost connection
-      }).on('active', function (info) {
-        // replication was resumed
-        // eslint-disable-next-line handle-callback-err
-      }).on('error', function (err) {
-        // totally unhandled error (shouldn't happen)
-        console.log(err)
-      })
-
       var context = this // to enable accessing the 'campaigns' variable inside submethods
-      sectiondb.allDocs({
+      sectionsdb.allDocs({
         include_docs: true,
         attachments: true
       }).then(function (result) {
         for (let item of result.rows) {
-          if (item.doc.excavationId === VueCookies.get('currentExcavation')._id) context.sections.push(item.doc)
+          if (item.doc.excavation_id === context.excavation_id) {
+            context.sections.push(item.doc)
+          }
         }
       }).catch(function (err) {
         console.log(err)
@@ -74,47 +46,25 @@ export default {
       context.sections.sort()
     },
     selectSection: function (item) {
-      VueCookies.set('currentSection', item)
-      // eslint-disable-next-line standard/object-curly-even-spacing
-      switch(VueCookies.get('actionForSectionSelection'))
-      {
-        case 'goToFinds': this.$router.push({ name: 'FindsOverview'}); break;
-        case 'goToStructures': this.$router.push({ name: 'StructuresOverview'}); break;
-        case 'goToProbes': this.$router.push({ name: 'ProbesOverview'}); break;
-        default:  this.$router.push({ name: 'SectionOverview'}); break;
-      }
-
-    }, // TODO
-
-    createSection: function () {
-      // eslint-disable-next-line standard/object-curly-even-spacing
-      this.$router.push({ name: 'CreateSection'})
-    }, // TODO
-
-    modifySection: function (item) {
-      // eslint-disable-next-line standard/object-curly-even-spacing
-      this.$router.push({ name: 'ModifySection', params: { _id: item._id }})
-    }, // TODO
-      even: function(arr) {
-          // Set slice() to avoid to generate an infinite loop!
-          return arr.slice().sort(function(a, b) {
-              return a.title - b.title
-          })
-      },
-    deleteSection: function (item) { } // TODO: change campaign
+      this.$emit('sectionselect', item._id)
+    },
+    modifySection: function (item_id) {
+      VueCookies.set('excavationTab', 1)
+      this.$router.push({ name: 'SectionCreation', params: { section_id: item_id }})
+    }
   },
   created () {
     this.getSections()
-  },
-  beforeDestroy(){
-    VueCookies.set('actionForSectionSelection','standard')
   },
   data: function () {
       return {
           sections: []
       }
+  },
+  props:{
+    select_section: Boolean,
+    excavation_id: String
   }
-
 }
 
 </script>
@@ -124,7 +74,4 @@ export default {
 </style>
 
 <style scoped>
-  .buttonContainer{
-    padding: 0 150px;
-  }
 </style>

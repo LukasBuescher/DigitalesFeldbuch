@@ -1,46 +1,27 @@
 <template>
-    <div>
-      <h1>Auswahl einer übergeordneten Kampagne</h1>
-      <p v-if="campaigns.length === 0">
-        <ion-icon name="information-circle"></ion-icon> Es wurden bisher noch keine Kampagnen angelegt.
-      </p>
-      <!-- List of Text Items -->
-      <div class="buttonContainer"><ion-button color="secondary" expand="block" @click="createCampaign()">Neue Kampagne</ion-button></div>
-      <!--<ion-button color="secondary" expand="block" @click="synccampaigns()">Synchronisieren</ion-button>-->
-      <ion-list>
-        <ion-item-sliding v-for="item in even(campaigns)" v-bind:key="item._id" lines="inset">
-
-          <ion-item-options side="start">
-            <ion-item-option @click="selectCampaign(item)">Öffnen</ion-item-option>
-          </ion-item-options>
-
-            <ion-item detail="true" @click="selectCampaign(item)" >
-              <ion-label>
-                <h2> {{item.title}} </h2>
-                <p> {{item.description}} </p>
-              </ion-label>
-            </ion-item>
-
-          <ion-item-options side="end">
-            <ion-item-option @click="modifyCampaign(item)">Bearbeiten</ion-item-option>
-            <ion-item-option color="danger" @click="deleteCampaign(item)">
-              <ion-icon slot="icon-only" name="trash"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-        </ion-item-sliding>
-      </ion-list>
-
-    </div>
+  <v-form>
+    <v-subheader v-if="campaigns.length === 0" > Bisher wurde kein Projekt angelegt</v-subheader>
+    <v-list>
+      <template v-for="(campaign, i) in campaigns" >
+        <v-list-item :key="i" v-on:click="modifyCampaign(campaign._id)">
+          <v-list-item-content>
+            <v-list-item-title> {{campaign.title}} </v-list-item-title>
+            <v-list-item-subtitle> {{campaign.description}} </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider v-if="i !== campaigns.length - 1"></v-divider>
+      </template>
+    </v-list>
+    <v-btn v-on:click="modifyCampaign('new')" color="primary"> Projekt hinzufügen </v-btn>
+  </v-form>
 </template>
 
 <script>
 import VueCookies from 'vue-cookies'
-import RestartButton from './RestartButton'
-import {path} from '../adress.js'
-import PouchDB from 'pouchdb'
+import RestartButton from '../obsolete/RestartButton'
+import {campaignsdb} from '../adress.js'
 
-//var PouchDB = require('pouchdb-browser').default // doesn'T work without '.default' despite documentation, solution found in some github issuetracker
-var campaignsdb = new PouchDB('campaigns_database')
+
 
 export default {
 
@@ -48,21 +29,6 @@ export default {
   components: {RestartButton},
   methods: {
     getCampaigns: function () {
-      var campaignsremoteDB = new PouchDB(path + '/campaigns')
-      campaignsdb.sync(campaignsremoteDB, {
-        live: true,
-        retry: true
-      }).on('change', function (change) {
-        // yo, something changed!
-      }).on('paused', function (info) {
-        // replication was paused, usually because of a lost connection
-      }).on('active', function (info) {
-        // replication was resumed
-        // eslint-disable-next-line handle-callback-err
-      }).on('error', function (err) {
-        // totally unhandled error (shouldn't happen)
-        console.log(err)
-      })
       var context = this // to enable accessing the 'campaigns' variable inside submethods
       campaignsdb.allDocs({
         include_docs: true,
@@ -76,36 +42,22 @@ export default {
       })
       context.campaigns.sort()
     },
-    selectCampaign: function (item) {
-      VueCookies.set('currentCampaign', item)
+    modifyCampaign: function (item_id) {
       // eslint-disable-next-line standard/object-curly-even-spacing
-      this.$router.push({ name: 'CampaignOverview', params: { _id: item._id }})
-    },
-
-    createCampaign: function () {
-      // eslint-disable-next-line standard/object-curly-even-spacing
-      this.$router.push({ name: 'CreateCampaign'})
-    },
-
-    modifyCampaign: function (item) {
-      // eslint-disable-next-line standard/object-curly-even-spacing
-      this.$router.push({ name: 'ModifyCampaign', params: { _id: item._id }})
-    },
-
-    synccampaigns: function(){
-      var campaignsremoteDB = new PouchDB(path + '/campaigns')
-      campaignsdb.sync(campaignsremoteDB)
+      if(item_id !== 'new'){
+        VueCookies.set('currentCampaign', item_id)
+      }
+      this.$router.push({ name: 'CampaignCreation', params: { campaign_id: item_id }})
     },
     even: function(arr) {
       // Set slice() to avoid to generate an infinite loop!
       return arr.slice().sort(function (a, b) {
         return a.title - b.title
       })
-    },
-
-    deleteCampaign: function (item) { } // TODO: change campaign
+    }
   },
-  beforeMount () {
+  created () {
+    this.$emit('view','Kampagnenübersicht')
     this.getCampaigns()
   },
   data: function () {
@@ -118,7 +70,4 @@ export default {
 </script>
 
 <style scoped>
-  .buttonContainer{
-    padding: 0 150px;
-  }
 </style>

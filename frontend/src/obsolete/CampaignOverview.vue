@@ -1,28 +1,22 @@
 <template>
-  <div v-if="campaignIsSet">
-    <h1> Kampagne: {{title}}</h1>
+  <v-form v-if="campaignIsSet">
+    <h1> Projekt: {{title}}</h1>
     <p> {{description}}</p>
-    <p>
-      Ansprechpartner:
-      <span v-for="item in affiliatedContactPersons">
-        {{item.name}}<span v-if="affiliatedContactPersons.length !== 0">,</span>
-      </span></p>
-    <ion-button @click="modifyCampaign()">Kampagne bearbeiten</ion-button>
+    <v-btn v-on:click="modifyCampaign"color="secondary">Projekt bearbeiten</v-btn>
+    <v-btn v-on:click="createExcavation" color="primary"> Grabung hinzufügen </v-btn>
     <hr>
     <!-- the list of excavations and correlating functionality comes from a nested component: -->
     <ExcavationsOverview/>
-  </div>
-  <div v-else>
-    <h1><ion-icon name="alert"></ion-icon></h1>
-    <p>
-      Sie müssen zunächst eine Kampagne auswählen, bevor der Zugriff auf die zugehörigen Grabungen möglich ist.
-    </p>
-    <ion-button color="secondary" expand="block" @click="openCampaignsOverview()">Kampagne auswählen</ion-button>
-  </div>
+  </v-form>
+  <v-form v-else>
+    <v-icon x-large>mdi-alert-circle</v-icon>
+    <h1> Sie müssen zunächst ein Projekt auswählen, bevor der Zugriff auf die zugehörigen Grabungen möglich ist </h1>
+    <v-btn color="secondary" expand="block" v-on:click="openCampaignsOverview">Projekt auswählen</v-btn>
+  </v-form>
 </template>
 
 <script>
-import ExcavationsOverview from './ExcavationsOverview'
+import ExcavationsOverview from '../components/ExcavationsOverview'
 import VueCookies from 'vue-cookies'
 import {path} from '../adress.js'
 
@@ -87,6 +81,10 @@ export default {
     },
     openCampaignsOverview: function () {
       this.$router.push({ name: 'CampaignsOverview'})
+    },
+    createExcavation: function () {
+      // eslint-disable-next-line standard/object-curly-even-spacing
+      this.$router.push({ name: 'CreateExcavation'})
     }
   }
 

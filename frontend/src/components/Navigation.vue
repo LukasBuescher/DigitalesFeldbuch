@@ -1,59 +1,63 @@
 <template>
-  <div class="hiddenDiv">
-    <span class="invisibleUpdateForcerSpan">{{$route.name}}</span>
-
-<div v-if="showNav" id="navWrapper">
-      <Push >
-        <router-link to="/home">Startseite</router-link>
-       <!-- <router-link to="/login">Login</router-link> -->
-        <router-link to="/campaigns">Kampagnenauswahl</router-link>
-        <router-link to="/campaign">Grabungsauswahl</router-link>
-        <router-link to="/excavation/sections">Schnitte</router-link>
-        <router-link to="/excavation/structures">Befunde (SE)</router-link>
-        <router-link to="/excavation/finds">Funde</router-link>
-        <router-link to="/viewer3d">3D Viewer</router-link>
-        <!--router-link to="/constructedobjects">Baulicher Bestand</1--router-link-->
-        <router-link to="/constructedobjects">Baulicher Bestand</router-link>
-        <hr>
-        <!--<router-link to="/administration">Verwaltung</router-link>-->
-     <!--   <router-link to="/structures">Befunde</router-link>
-        <router-link to="/finds">Funde</router-link> -->
-      </Push>
-
-</div>
+  <div>
+    <v-navigation-drawer app nav right v-model="drawer" color="#e8e4d9">
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title class="title">
+            Digitales Feldbuch
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-divider></v-divider>
+      <v-list-item v-for="item in items" :key="item.title" link :to="item.link">
+        <v-list-item-content>
+          <v-list-item-title>
+            {{item.title}}
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item v-on:click="bottom_sheet = !bottom_sheet">
+        <v-list-item-title>
+          Datenbank
+        </v-list-item-title>
+      </v-list-item>
+    </v-navigation-drawer>
+    <v-bottom-sheet v-model="bottom_sheet">
+      <v-sheet>
+        <v-text-field v-model="path" label="Pfad"></v-text-field>
+        <v-btn v-on:click="savepath" color="secondary"> Speichern </v-btn>
+      </v-sheet>
+    </v-bottom-sheet>
   </div>
-
 </template>
 
 <script>
-
-import { Push } from 'vue-burger-menu' // import the CSS transitions you wish to use, in this case we are using `Slide`
+import {setpath} from '../adress'
 
 export default {
-  components: {
-    Push // Register your component
+  name: 'Navigation',
+  props: {
+    drawer: Boolean
   },
   data: function () {
     return {
-      showNav: true
+      bottom_sheet: false,
+      path: '127.0.0.1:5984',
+      items: [
+        {link: "/home", title:"Startseite"},
+        {link: "/campaigns", title: "Übergeordnete Projekte"},
+        /*{link: "/excavation", title: "Grabungen" },
+        {link: "/excavation/sections", title: "Schnitte"},
+        {link: "/excavation/structures", title: "Befunde (SE)"},
+        {link: "/excavation/finds", title: "Funde"},
+        {link: "/excavation/samples", title: "Proben"}*/
+      ]
     }
   },
   methods: {
-    handleClick: function () { alert('asd') },
-    backButtonToggle () {
-
-      if(this.$route.meta.showBackButton != true) this.showNav = true
-      else this.showNav = false
-      //console.log("toggle")
-      //console.log(this.showNav)
+    savepath (){
+      setpath(this.path)
     }
-  },
-  created () {
-    this.backButtonToggle()
-  },
-  updated () {
-    //console.log("UPDATE NAV")
-    this.backButtonToggle()
   }
 }
 
@@ -61,100 +65,4 @@ export default {
 
 <style >
 
-  div.hiddenDiv {
-    height:0
-  }
-
-  span.invisibleUpdateForcerSpan{
-visibility: hidden;
-  }
-
-  div#navWrapper{
-    position: fixed !important;
-    top: 18px !important;
-    left: 18px !important;
-    z-index:45 !important;
-  }
-
-  .bm-menu a{
-    color: #594743 !important;
-  }
-
-  a.router-link-active{
-    color:  var(--ion-color-primary-contrast) !important;
-    background-color:  var(--ion-color-primary) !important;
-  }
-
-  .bm-burger-button {
-
-    width: 36px !important;
-    height: 30px !important;
-    left: 18px !important;
-    top: 18px !important;
-    cursor: pointer !important;
-    z-index: 100 !important;
-    position: sticky !important;
-  }
-  .bm-burger-bars {
-    background-color: var(--ion-color-primary-contrast) !important;
-    z-index: 100 !important;
-    border-radius: 2px !important;
-  }
-  .line-style {
-    position: absolute !important;
-    height: 15% !important;
-    left: 0 !important;
-    right: 0 !important;
-  }
-  .cross-style {
-    position: absolute !important;
-    top: 12px !important;
-    right: 2px !important;
-    cursor: pointer !important;
-  }
-  .bm-cross {
-    background-color: #594743 !important;
-  }
-  .bm-cross-button {
-    height: 24px !important;
-    width: 24px !important;
-  }
-  .bm-menu {
-    height: 100% !important; /* 100% Full-height */
-    width: 0; /* 0 width - change this with JavaScript */
-    position: fixed; /* Stay in place */
-    z-index: 1000 !important; /* Stay on top */
-    top: 0;
-    left: 0;
-    background-color: var(--ion-color-light)  !important; /* Black*/
-    overflow-x: hidden !important; /* Disable horizontal scroll */
-    padding-top: 60px !important; /* Place content 60px from the top */
-    transition: 0.5s !important; /*0.5 second transition effect to slide in the sidenav*/
-    -webkit-box-shadow: 0px 0px 16px 0px var(--ion-color-light-contrast) !important;
-    -moz-box-shadow: 0px 0px 16px 0px var(--ion-color-light-contrast) !important;
-    box-shadow: 0px 0px 16px 0px var(--ion-color-light-contrast) !important;
-  }
-
-  .bm-overlay {
-    background: rgba(0, 0, 0, 0.3) !important;
-  }
-  .bm-item-list {
-    color: var(--ion-color-light) !important;
-    /*margin-left: 10%;*/
-    margin-left: 0 !important;
-    font-size: 20px !important;
-  }
-
-  .bm-item-list > *  {
-    display: flex !important;
-    text-decoration: none !important;
-    padding: 0.7em !important;
-    padding-left: 30px !important;
-  }
-
-  .bm-item-list > * > span {
-    margin-left: 10px !important;
-    font-weight: 700 !important;
-    color: white !important;
-  }
 </style>
