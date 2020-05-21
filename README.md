@@ -1,14 +1,13 @@
 # DigitalesFeldbuch
 Überarbeitete Version des Feldbuchs
 
-Starten des Feldbuchs im Development Modus (Ansicht im Browser über http://localhost:8080/):
+Starten des Feldbuchs im Development Modus:
 
-npm run dev
+**npm run dev**
 
-Eventuell Abhängigkeiten hinzugügen: 
+Die URL, um das System im Browser zu betrachten wird in der Console ausgegeben ([localhost:8080](http://localhost:8080/)).
+Eventuell sind weitere Abhängigkeiten hinzugügen: 
 
-npm install "packagename"
+**npm install "package_name"**
 
-Um apk zu erzeugen wird Cordova und Android Studio benötigt: 
-
-https://cordova.apache.org/#getstarted
+Um ein Android-apk der App zu erzeugen wird [Cordova](https://cordova.apache.org/docs/en/9.x/guide/platforms/android/index.html) benötigt.
