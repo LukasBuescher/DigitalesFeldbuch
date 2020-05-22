@@ -320,6 +320,8 @@ export default {
         context.$emit('view','Neuen Befund erstellen')
         context.structure_doc.section_id = VueCookies.get('currentSection')
         context.structure_doc.excavation_id = context.$route.params.excavation_id
+        let currentdate = new Date().toISOString()
+        context.structure_doc.dates.push({id: new Date().toISOString(), title: 'Eintragungsdatum', date: currentdate.substr(8,2) + ' ' + currentdate.substr(5,2) + ' ' + currentdate.substr(0,4)})
       }
     },
     logForm: function () {

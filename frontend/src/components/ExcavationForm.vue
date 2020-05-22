@@ -36,6 +36,7 @@ export default {
         excavationFocus: '',
         location: '',
         campaign_id: '',
+        dates: []
       },
       campaigns: [],
       error_dialog: false,
@@ -61,7 +62,9 @@ export default {
           console.log(err)
         })
       } else {
-        this.excavation_doc.campaign_id = this.campaign_id
+        context.excavation_doc.campaign_id = this.campaign_id
+        let currentdate = new Date().toISOString()
+        context.excavation_doc.dates.push({id: new Date().toISOString(), title: 'Eintragungsdatum', date: currentdate.substr(8,2) + ' ' + currentdate.substr(5,2) + ' ' + currentdate.substr(0,4)})
       }
     },
     get_campaigns: function () {

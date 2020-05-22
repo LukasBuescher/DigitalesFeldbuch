@@ -257,7 +257,8 @@ export default {
         context.$emit('view','Neuen Fund erstellen')
         context.find_doc.excavation_id = context.$route.params.excavation_id
         context.find_doc.section_id = VueCookies.get('currentSection')
-        context.find_doc.dates.push({id: new Date().toISOString(), title: 'Eintragungsdatum', date: new Date().toISOString()})
+        let currentdate = new Date().toISOString()
+        context.find_doc.dates.push({id: new Date().toISOString(), title: 'Eintragungsdatum', date: currentdate.substr(8,2) + ' ' + currentdate.substr(5,2) + ' ' + currentdate.substr(0,4)})
       }
     },
     getSections () {

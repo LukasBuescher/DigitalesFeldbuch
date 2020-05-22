@@ -46,7 +46,7 @@
         },
         add_date: function () {
           this.dates_overlay = false
-          this.dates.push({id: new Date().toISOString(), title: this.new_date.title, date: this.new_date.date})
+          this.dates.push({id: new Date().toISOString(), title: this.new_date.title, date: this.new_date.date.substr(8,2) + ' ' + this.new_date.date.substr(5,2) + ' ' + this.new_date.date.substr(0,4)})
         }
       }
     }

@@ -18,6 +18,11 @@
         <DocContactPersons :persons="campaign_doc.persons"/>
       </v-tab-item>
 
+      <v-tab> Daten </v-tab>
+      <v-tab-item class="px-4">
+        <DocDates :dates="campaign_doc.dates"/>
+      </v-tab-item>
+
       <!--v-tab> Pdf generieren <v-tab>
       <v-tab-item>
         <PdfComponent />
@@ -40,17 +45,19 @@
   import VueCookies from 'vue-cookies'
   import DocContactPersons from "./DocContactPersons";
   import PdfComponent from "./PdfComponent";
+  import DocDates from "./DocDates";
 
   export default {
     name: 'CampaignCreation',
-    components: {PdfComponent, DocContactPersons, ExcavationsOverview},
+    components: {PdfComponent, DocContactPersons, ExcavationsOverview, DocDates},
     data: function () {
       return {
         campaign_doc: {
           _id: new Date().toISOString(),
           title: '',
           description: '',
-          persons: []
+          persons: [],
+          dates: []
         },
         is_new: true,
         is_required: [v => !!v || 'Pflichtfeld'],
@@ -76,6 +83,8 @@
           })
         } else {
           context.$emit('view','Neues Projekt anlegen')
+          let currentdate = new Date().toISOString()
+          context.campaign_doc.dates.push({id: new Date().toISOString(), title: 'Eintragungsdatum', date: currentdate.substr(8,2) + ' ' + currentdate.substr(5,2) + ' ' + currentdate.substr(0,4)})
         }
       },
       logForm: function (to_campaignsoverview) {
