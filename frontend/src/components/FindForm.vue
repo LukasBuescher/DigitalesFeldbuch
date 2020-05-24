@@ -351,17 +351,21 @@ export default {
         let context = this
         findsdb.put(this.find_doc, function callback(err, result) {
           if (!err) {
-            context.$router.push({
-              name: 'ExcavationOverview',
-              params: {excavation_id: context.$route.params.excavation_id}
-            })
+            context.$router.push({ name: 'SectionOverview', params: {
+                campaign_id: this.$route.params.campaign_id,
+                excavation_id: this.$route.params.excavation_id,
+                section_id: this.$route.params.section_id }})
           }
         })
       }
      },
     goBack: function () {
-      this.$router.push({ name: 'ExcavationOverview', params: { excavation_id: this.$route.params.excavation_id }})
-      },
+      this.$router.push({
+        name: 'SectionOverview', params: {
+          campaign_id: this.$route.params.campaign_id,
+          excavation_id: this.$route.params.excavation_id,
+          section_id: this.$route.params.section_id }})
+    }
   }
 }
 </script>
