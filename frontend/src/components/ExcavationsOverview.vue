@@ -1,6 +1,6 @@
 <template>
   <v-form>
-    <div v-if="!new_excavation">
+    <div>
       <v-subheader v-if="excavations.length === 0"> Bisher wurden dem Projekt keine Grabungen hinzugefügt</v-subheader>
       <v-subheader v-else>Zugehörige Grabungen</v-subheader>
       <v-list>
@@ -13,10 +13,7 @@
             <v-divider v-if="i !== excavations.length - 1"></v-divider>
           </template>
         </v-list>
-      <v-btn @click="new_excavation = true" color="secondary"> Grabung hinzufügen</v-btn>
-    </div>
-    <div v-else>
-      <ExcavationCreation excavation_id="new" v-on:save_excavation="$emit(`save_excavation`)" v-on:cancel_creation="new_excavation = false" :campaign_id="campaign_id"/>
+      <v-btn v-on:click="selectExcavation('new')" color="secondary"> Grabung hinzufügen</v-btn>
     </div>
   </v-form>
 </template>
@@ -28,7 +25,6 @@ import ExcavationCreation from "./ExcavationForm";
 
 export default {
   name: 'ExcavationsOverview',
-  components: {ExcavationCreation},
   methods: {
     getExcavations: function () {
       var context = this
@@ -46,7 +42,7 @@ export default {
     selectExcavation: function (item_id) {
       this.$emit(`save_excavation`)
       VueCookies.set('currentExcavation', item_id)
-      this.$router.push({ name: 'ExcavationOverview', params: { excavation_id: item_id}})
+      this.$router.push({ name: 'ExcavationForm', params: { campaign_id: this.campaign_id, excavation_id: item_id}})
     }
   },
   beforeMount () {

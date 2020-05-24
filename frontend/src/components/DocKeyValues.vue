@@ -13,8 +13,8 @@
           <v-text-field v-model="new_key_value.value" label="Wert"></v-text-field>
         </v-card-text>
         <v-card-actions>
-          <v-btn v-on:click="confirm_key_value">Bestätigen</v-btn>
-          <v-btn @click="key_value_overlay = false">Abbrechen</v-btn>
+          <v-btn v-on:click="confirm_key_value" color="secondary">Bestätigen</v-btn>
+          <v-btn @click="key_value_overlay = false" color="primary">Abbrechen</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

@@ -18,7 +18,6 @@
 
 <script>
 import VueCookies from 'vue-cookies'
-import RestartButton from '../obsolete/RestartButton'
 import {campaignsdb} from '../adress.js'
 
 
@@ -26,7 +25,6 @@ import {campaignsdb} from '../adress.js'
 export default {
 
   name: 'CampaignsOverview',
-  components: {RestartButton},
   methods: {
     getCampaigns: function () {
       var context = this // to enable accessing the 'campaigns' variable inside submethods

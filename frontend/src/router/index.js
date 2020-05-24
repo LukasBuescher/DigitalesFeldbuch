@@ -5,11 +5,11 @@ import CampaignsOverview from '@/components/CampaignsOverview'
 import CampaignForm from '@/components/CampaignForm'
 import FindCreation from '@/components/FindForm'
 import StructureCreation from '@/components/StructureForm'
-import ExcavationOverview from '@/components/ExcavationOverview'
+import ExcavationForm from "../components/ExcavationForm";
 import FallbackComponent from '@/components/FallbackComponent'
 import SectionCreation from '@/components/SectionForm'
 import SampleCreation from "../components/SampleForm"
-import ExcavationCreation from "../components/ExcavationForm"
+import SectionOverview from "../components/SectionOverview";
 
 Vue.use(Router)
 
@@ -34,40 +34,8 @@ export default new Router({
       path: '/campaigns',
       name: 'CampaignsOverview', // name is optional
       component: CampaignsOverview,
-      meta: { // meta is optional
+      meta: {
         title: 'Alle Projekte'
-      }
-    },
-    {
-      path: '/samples/:excavation_id/:sample_id',
-      name: 'SampleCreation',
-      component: SampleCreation,
-      meta: {
-        title: 'Probe bearbeiten'
-      }
-    },
-    {
-      path: '/sections/:excavation_id/:section_id',
-      name: 'SectionCreation',
-      component: SectionCreation,
-      meta: {
-        title: 'Schnitt anlegen'
-      }
-    },
-    {
-      path: '/structures/:excavation_id/:structure_id',
-      name: 'StructureCreation',
-      component: StructureCreation,
-      meta: {
-        title: 'Befund anlegen'
-      }
-    },
-    {
-      path: '/finds/:excavation_id/:find_id',
-      name: 'FindCreation',
-      component: FindCreation,
-      meta: {
-        title: 'Fund bearbeiten'
       }
     },
     {
@@ -79,54 +47,52 @@ export default new Router({
       }
     },
     {
-      path: '/excavation/:excavation_id',
-      name: 'ExcavationOverview',
-      component: ExcavationOverview,
+      path: '/campaigns/:campaign_id/excavations/:excavation_id',
+      name: 'ExcavationForm',
+      component: ExcavationForm,
       meta: {
         title: 'Ausgrabung'
       }
     },
     {
-      path: '/excavation/create/:excavation_id',
-      name: 'CreateExcavation',
-      component: ExcavationCreation,
+      path: '/campaigns/:campaign_id/excavations/:excavation_id/sections/:section_id',
+      name: 'SectionCreation',
+      component: SectionCreation,
       meta: {
-        title: 'Ausgrabung bearbeiten'
+        title: 'Schnitt anlegen'
+      }
+    },
+    {
+      path: '/campaigns/:campaign_id/excavations/:excavation_id/sections/:section_id',
+      name: 'SectionOverview',
+      component: SectionOverview,
+      meta: {
+        title: 'Schnitt anlegen'
+      }
+    },
+    {
+      path: '/campaigns/:campaign_id/excavations/:excavation_id/sections/:section_id/samples/:sample_id',
+      name: 'SampleCreation',
+      component: SampleCreation,
+      meta: {
+        title: 'Probe bearbeiten'
+      }
+    },
+    {
+      path: '/campaigns:campaign_id/excavations/:excavation_id/sections/:section_id/structures/:structure_id',
+      name: 'StructureCreation',
+      component: StructureCreation,
+      meta: {
+        title: 'Befund anlegen'
+      }
+    },
+    {
+      path: '/campaigns:campaign_id/excavations/:excavation_id/sections/:section_id/finds/:find_id',
+      name: 'FindCreation',
+      component: FindCreation,
+      meta: {
+        title: 'Fund bearbeiten'
       }
     }
-      /*children: [
-        {
-          path: 'sections',
-          name: 'SectionsOverview',
-          component: SectionsOverview,
-          meta: {
-            title: 'Schnitte'
-          }
-        },
-        {
-          path: 'samples',
-          name: 'SamplesOverview',
-          component: SamplesOverview,
-          meta: {
-            title: 'Proben'
-          }
-        },
-        {
-          path: 'finds',
-          name: 'FindsOverview',
-          component: FindsOverview,
-          meta: {
-            title: 'Funde'
-          }
-        },
-        {
-          path: 'structures',
-          name: 'StructuresOverview',
-          component: StructuresOverview,
-          meta: {
-            title: 'Befunde (SE)'
-          }
-        }
-      ]*/
   ]
 })

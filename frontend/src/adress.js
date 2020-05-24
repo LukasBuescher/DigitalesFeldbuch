@@ -26,7 +26,7 @@ function initializedatabases() {
     structuresremoteDB = new PouchDB(path + '/structures')
     findsremoteDB = new PouchDB(path + '/finds')
     samplesremoteDB = new PouchDB(path + '/samples')
-    syncall()
+    //syncall()
   }
 }
 
@@ -48,7 +48,7 @@ function setpath(newpath) {
   structuresremoteDB = new PouchDB(path + '/structures')
   findsremoteDB = new PouchDB(path + '/finds')
   samplesremoteDB = new PouchDB(path + '/samples')
-  syncall()
+  //syncall()
 }
 
 function sync(db, remotedb) {
@@ -64,5 +64,5 @@ function sync(db, remotedb) {
 }
 
 
-export { path, excavationsdb, sectionsdb, campaignsdb, findsdb, structuresdb, samplesdb, initializedatabases, setpath}
+export { excavationsdb, sectionsdb, campaignsdb, findsdb, structuresdb, samplesdb, initializedatabases, setpath}
 

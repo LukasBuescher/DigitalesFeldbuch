@@ -15,8 +15,8 @@
           <v-text-field v-model="new_color.hvc_chroma" label="Chroma"></v-text-field>
         </v-card-text>
         <v-card-actions>
-          <v-btn v-on:click="confirm_color">Bestätigen</v-btn>
-          <v-btn @click="colors_overlay = false">Abbrechen</v-btn>
+          <v-btn v-on:click="confirm_color" color="secondary">Bestätigen</v-btn>
+          <v-btn @click="colors_overlay = false" color="primary">Abbrechen</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

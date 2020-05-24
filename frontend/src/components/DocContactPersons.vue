@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-data-table :headers="persons_headers" :items="persons" v-model="selected_person" item-key="id" show-select  :single-select="true" hide-default-footer>  </v-data-table>
+    <v-data-table :headers="persons_headers" :items="persons" v-model="selected_person" item-key="id" show-select :single-select="true" hide-default-footer>  </v-data-table>
     <v-btn v-on:click="add_person" color="secondary"> Hinzufügen</v-btn>
     <v-btn v-on:click="remove_person" color="primary"> Entfernen </v-btn>
     <v-btn v-on:click="edit_person" color="secondary"> Bearbeiten </v-btn>

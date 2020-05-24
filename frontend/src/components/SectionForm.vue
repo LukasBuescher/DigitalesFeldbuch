@@ -29,7 +29,7 @@
         <DocImages :images="section_doc.images" />
       </v-tab-item>
 
-      <v-btn v-on:click="logForm" color="secondary" class="py-6" tile depressed>Speichern</v-btn>
+      <v-btn v-on:click="logForm" color="secondary"  class="py-6" tile depressed>Speichern</v-btn>
       <v-btn v-on:click="goBack" color="primary"  class="py-6" tile depressed>Abbrechen</v-btn>
 
     </v-tabs>
@@ -45,6 +45,7 @@ import DocLengths from "./DocLengths";
 import DocDates from "./DocDates";
 import DocMeasuringPoints from "./DocMeasuringPoints";
 import DocImages from "./DocImages";
+import VueCookies from "vue-cookies";
 
 export default {
   name: 'SectionCreation',
@@ -80,7 +81,11 @@ export default {
           let router = this.$router
           sectionsdb.put(context.section_doc, function callback(err, result) {
             if (!err) {
-              router.push({name: 'ExcavationOverview', params: {excavation_id: context.section_doc.excavation_id}})
+              if(this.$route.params.section_id === 'new') {
+                VueCookies.set('currentSection', this.section_doc._id)
+                VueCookies.set('excavationTab', 0)
+                router.push({name: 'ExcavationForm', params: {excavation_id: context.section_doc.excavation_id}})
+              }
             }
           })
         } else {
@@ -116,7 +121,7 @@ export default {
       })
     },
     goBack: function () {
-      this.$router.go(-1)
+      this.$router.push({name: 'ExcavationForm'})
     }
   }
 }

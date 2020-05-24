@@ -13,11 +13,11 @@
           <v-text-field v-model="new_length.accuracy" label="Genauigkeit"></v-text-field>
           <v-text-field v-model="new_length.from" label="Von"></v-text-field>
           <v-text-field v-model="new_length.to" label="Bis"></v-text-field>
-          <v-select v-model="new_length.unit" :items="['mm','cm','m']" label="Einheit"></v-select>
+          <v-select v-model="new_length.unit" :items="['mm','cm','m','g','kg']" label="Einheit"></v-select>
         </v-card-text>
         <v-card-actions>
-          <v-btn v-on:click="confirm_length">Bestätigen</v-btn>
-          <v-btn @click="lengths_overlay = false">Abbrechen</v-btn>
+          <v-btn v-on:click="confirm_length" color="secondary">Bestätigen</v-btn>
+          <v-btn @click="lengths_overlay = false" color="primary">Abbrechen</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
