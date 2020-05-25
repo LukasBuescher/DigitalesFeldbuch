@@ -35,7 +35,7 @@
             {text: 'Chroma', value: 'hvc_chroma'}
           ],
           selected_color: [],
-          new_color: {title: '', hvc_hue: '', hvc_value: '', hvc_chroma: ''},
+          new_color: {title: '', hvc_hue: '', hvc_value: '', hvc_chroma: '', hex: '', edit: false},
           colors_overlay: false
         }
       },
@@ -50,6 +50,7 @@
             hvc_hue: '',
             hvc_value: '',
             hvc_chroma: '',
+            hex: '',
             edit: false
           }
           this.colors_overlay = true
