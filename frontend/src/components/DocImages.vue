@@ -17,7 +17,7 @@
         <v-card-title> Bild hinzufügen </v-card-title>
         <v-card-text>
           <v-text-field v-model="new_image.title" label="Bezeichnung"></v-text-field>
-          <v-text-field v-model="new_image.number" label="Bezeichnung"></v-text-field>
+          <v-text-field v-model="new_image.number" label="Nummer"></v-text-field>
           <v-file-input v-model="input_file" accept="image/*" label="Datei auswählen" show-size></v-file-input>
         </v-card-text>
         <v-card-actions>

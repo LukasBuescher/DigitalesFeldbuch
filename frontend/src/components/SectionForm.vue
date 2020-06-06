@@ -81,8 +81,8 @@ export default {
           let router = this.$router
           sectionsdb.put(context.section_doc, function callback(err, result) {
             if (!err) {
-              if(this.$route.params.section_id === 'new') {
-                VueCookies.set('currentSection', this.section_doc._id)
+              if(context.$route.params.section_id === 'new') {
+                VueCookies.set('currentSection', context.section_doc._id)
                 VueCookies.set('excavationTab', 0)
                 router.push({name: 'ExcavationForm', params: {excavation_id: context.section_doc.excavation_id}})
               }

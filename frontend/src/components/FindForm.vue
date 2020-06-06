@@ -10,7 +10,7 @@
         <v-tab v-if="find_doc.colors_visible">Farbwerte</v-tab>
         <v-tab v-if="find_doc.datings_visible">Datierungen</v-tab>
         <v-tab v-if="find_doc.connected_objects_visible">Verbindungen</v-tab>
-        <v-tab v-if="find_doc.images_visible">Bilder</v-tab>
+        <v-tab>Bilder</v-tab>
 
       <v-tab-item class="px-4">
           <v-text-field v-model="find_doc.findnumber" label="Fundnummer *" hint="Geben sie hier die Fundnummer ein *(Pflichtfeld)" :rules="is_required"></v-text-field>
@@ -20,8 +20,8 @@
           <v-select v-model="find_doc.section_id" label="Zugehöriger Schnitt *" :items="availableSections" item-value="_id" item-text="title" :rules="is_required" hint=" *(Pflichtfeld)"> </v-select>
           <v-select v-model="find_doc.structure_id" label="Zugehöriger Befund *" :items="availableStructures" item-value="_id" item-text="structurenumber" :rules="is_required" hint="Zugehörigen Befund oder Streufund angeben *(Pflichtfeld)"> </v-select>
           <v-checkbox v-model="find_doc.measured" label="Eingemessen" > </v-checkbox>
-          <v-combobox v-model="find_doc.materials" label="Fundmaterial *" hint="*(Pflichtfeld)" :items="availableMaterials" :rules="is_required" multiple></v-combobox>
-          <v-combobox v-model="find_doc.types" label="Fundtypen" :items="availableTypes"></v-combobox>
+          <v-combobox v-model="find_doc.materials" label="Material *" hint="*(Pflichtfeld)" :items="availableMaterials" :rules="is_required" multiple></v-combobox>
+          <v-combobox v-model="find_doc.types" label="Typen" :items="availableTypes"></v-combobox>
       </v-tab-item>
 
       <v-tab-item class="px-4">
@@ -48,7 +48,7 @@
       </v-tab-item>
 
 
-      <v-tab-item v-if="find_doc.colors_visible" class="px-4">
+      <v-tab-item class="px-4">
         <DocColors :colors="find_doc.colors"/>
       </v-tab-item>
 
@@ -60,7 +60,7 @@
         <DocConnectedObjects :connected_objects="find_doc.connected_objects"/>
       </v-tab-item>
 
-      <v-tab-item v-if="find_doc.images_visible" class="px-4">
+      <v-tab-item class="px-4">
         <DocImages :images="find_doc.images"/>
       </v-tab-item>
 
@@ -72,12 +72,9 @@
     <v-bottom-sheet v-model="bottom_sheet">
       <v-sheet>
         <v-row justify="space-around">
-          <v-checkbox v-model="find_doc.dates_visible" label="Kalenderdaten" hint=""></v-checkbox>
-          <v-checkbox v-model="find_doc.measurings_visible" label="Messpunkte"></v-checkbox>
           <v-checkbox v-model="find_doc.key_values_visible" label="Zusatzattribute"></v-checkbox>
           <v-checkbox v-model="find_doc.colors_visible" label="Farbwerte"></v-checkbox>
           <v-checkbox v-model="find_doc.datings_visible" label="Datierungen"></v-checkbox>
-          <v-checkbox v-model="find_doc.images_visible" label="Bilder"></v-checkbox>
           <v-checkbox v-model="find_doc.connected_objects_visible" label="Verbindungen"></v-checkbox>
         </v-row>
       </v-sheet>
@@ -142,7 +139,6 @@ export default {
         dates: [],
         images: [],
 
-        images_visible: false,
         key_values_visible: false,
         colors_visible: false,
         datings_visible: false,

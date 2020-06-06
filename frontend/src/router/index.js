@@ -56,16 +56,16 @@ export default new Router({
     },
     {
       path: '/campaigns/:campaign_id/excavations/:excavation_id/sections/:section_id',
-      name: 'SectionCreation',
-      component: SectionCreation,
+      name: 'SectionOverview',
+      component: SectionOverview,
       meta: {
         title: 'Schnitt anlegen'
       }
     },
     {
       path: '/campaigns/:campaign_id/excavations/:excavation_id/sections/:section_id',
-      name: 'SectionOverview',
-      component: SectionOverview,
+      name: 'SectionCreation',
+      component: SectionCreation,
       meta: {
         title: 'Schnitt anlegen'
       }

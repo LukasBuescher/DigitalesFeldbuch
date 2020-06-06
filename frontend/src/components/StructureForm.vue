@@ -17,11 +17,12 @@
       <v-tab-item class="px-4">
           <v-text-field v-model="structure_doc.structurenumber" label="Befundnummer*(Pflichtfeld)" :rules="is_required"  hint="Geben sie hier die Befundnummer ein"></v-text-field>
           <v-text-field v-model="structure_doc.structurename" label="Kurzansprache" hint="Geben sie hier die Kurzansprache des Befundes an"></v-text-field>
+        <v-text-field v-model="structure_doc.interpretation" label="Vorläufige Interpretation" ></v-text-field>
           <v-select v-model="structure_doc.section_id" label="Schnitt*(Pflichtfeld)" :rules="is_required" :items="availableSections" item-text="title" item-value="_id"> </v-select>
           <v-select v-model="structure_doc.excavation_id" label="Grabung*(Pflichtfeld)" :rules="is_required" :items="availableExcavations" item-text="title" item-value="_id"> </v-select>
-          <v-textarea v-model="structure_doc.description" label="Beschreibung" hint="Geben sie hier eine Beschreibung für den Befund an"></v-textarea>
+          <v-textarea v-model="structure_doc.description" label="Allgemeine Beschreibung" hint="Geben sie hier eine Beschreibung für den Befund an"></v-textarea>
           <v-textarea v-model="structure_doc.localisation" label="Lokalisierung in Sondage" hint="Beschreiben sie wo der Befund sich befindet"></v-textarea>
-          <v-radio-group v-model="structure_doc.structure_type" label="Strukturtyp" >
+          <v-radio-group v-model="structure_doc.structure_type" label="Befundtyp" >
             <v-radio label="Stratigraphische Einheit" value="stratigraphical"></v-radio>
             <v-radio label="Baulicher Bestand" value="building"></v-radio>
             <v-radio label="Überreste" value="remains"></v-radio>
@@ -31,6 +32,7 @@
       <v-tab-item class="px-4">
         <div v-if="structure_doc.structure_type === 'stratigraphical'">
           <v-textarea v-model="structure_doc.extension" label="Ausdehnung" hint="Geben sie hier die Dimensionen des Befundes an"></v-textarea>
+          <v-text-field v-model="structure_doc.level" label="Niveau" hint="Geben sie hier das Niveau des Befundes an"></v-text-field>
           <v-text-field v-model="structure_doc.innerconsistency" label="Konsistenz Schichtinneres" hint="Beschreiben sie hier die innere Konsistenz der Schicht"></v-text-field>
           <v-text-field v-model="structure_doc.outerconsistency" label="Konsistenz Schichtäußeres" hint="Beschreiben sie hier die äußere Konsistenz der Schicht"></v-text-field>
         </div>
@@ -89,11 +91,11 @@
         <DocMatrix v-else :matrix="structure_doc.matrix"/>
       </v-tab-item>
 
-      <v-tab-item v-if="structure_doc.dates_visible" class="px-4">
+      <v-tab-item class="px-4">
         <DocDates :dates="structure_doc.dates"/>
       </v-tab-item>
 
-      <v-tab-item v-if="structure_doc.measurings_visible" class="px-4">
+      <v-tab-item class="px-4">
         <DocMeasurings :measuring_points="structure_doc.measuring_points"/>
       </v-tab-item>
 
@@ -101,11 +103,11 @@
         <DocKeyValues :key_values="structure_doc.key_values"/>
       </v-tab-item>
 
-      <v-tab-item  v-if="structure_doc.lengths_visible" class="px-4">
+      <v-tab-item class="px-4">
         <DocLengths :lengts="structure_doc.lengths"/>
       </v-tab-item>
 
-      <v-tab-item v-if="structure_doc.colors_visible" class="px-4">
+      <v-tab-item class="px-4">
         <DocColors :colors="structure_doc.colors"/>
       </v-tab-item>
 
@@ -117,7 +119,7 @@
         <DocConnectedObjects :connected_objects="structure_doc.connected_objects" />
       </v-tab-item>
 
-      <v-tab-item v-if="structure_doc.images_visible" class="px-4">
+      <v-tab-item class="px-4">
         <DocImages :images="structure_doc.images" />
       </v-tab-item>
 
@@ -130,13 +132,8 @@
     <v-bottom-sheet v-model="bottom_sheet">
       <v-sheet>
         <v-row justify="space-around">
-          <v-checkbox v-model="structure_doc.dates_visible" label="Kalenderdaten" hint=""></v-checkbox>
-          <v-checkbox v-model="structure_doc.measurings_visible" label="Messpunkte"></v-checkbox>
           <v-checkbox v-model="structure_doc.key_values_visible" label="Zusatzattribute"></v-checkbox>
-          <v-checkbox v-model="structure_doc.lengths_visible" label="Abmessungen"></v-checkbox>
-          <v-checkbox v-model="structure_doc.colors_visible" label="Farbwerte"></v-checkbox>
           <v-checkbox v-model="structure_doc.datings_visible" label="Datierungen"></v-checkbox>
-          <v-checkbox v-model="structure_doc.images_visible" label="Bilder"></v-checkbox>
           <v-checkbox v-model="structure_doc.connected_objects_visible" label="Verbindungen"></v-checkbox>
         </v-row>
       </v-sheet>
@@ -176,6 +173,7 @@ export default {
         structurenumber: '',
         structurename: '',
         description: '',
+        interpretation: '',
         structure_type: 'stratigraphical',
         localisation: '',
         section_id: '',
@@ -184,6 +182,7 @@ export default {
         extension: '',
         outerconsistency: '',
         innerconsistency: '',
+        level: '',
         // Building
         construction_type: '',
         wall_characteristics: '',
@@ -226,14 +225,9 @@ export default {
         grave_type: '',
         grave_construction: '',
 
-        dates_visible: false,
-        measurings_visible: false,
         key_values_visible: false,
-        lengths_visible: false,
-        colors_visible: false,
         datings_visible: false,
         connected_objects_visible: false,
-        images_visible: false,
 
         matrix: {
           lies_on: '',

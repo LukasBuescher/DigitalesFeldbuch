@@ -47,8 +47,6 @@ export default {
       excavation_id: '',
       section_id: '',
       tab_control: 0,
-      current_section_title: null,
-      current_section_id: null,
       select_tab: null,
       structures: [],
       samples: [],
@@ -64,7 +62,7 @@ export default {
         attachments: true
       }).then(function (result) {
         for (let item of result.rows) {
-          if (context.current_section_id === item.doc.section_id)
+          if (context.section_id === item.doc.section_id)
             new_array.push(item.doc)
         }
       }).catch(function (err) {
@@ -80,7 +78,7 @@ export default {
     this.section_id = this.$route.params.section_id
     this.finds = this.getArray(findsdb)
     this.samples = this.getArray(samplesdb)
-    this.structure = this.getArray(structuresdb)
+    this.structures = this.getArray(structuresdb)
     sectionsdb.get(this.section_id).then(function (doc) {
       context.$emit('view', doc.title + ` bearbeiten`)
     }).catch(function (err) {
