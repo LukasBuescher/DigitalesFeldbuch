@@ -2,6 +2,7 @@ import VueCookies from 'vue-cookies'
 
 var path = 'http://Admin:password@127.0.0.1:5984'
 var PouchDB = require('pouchdb-browser').default
+PouchDB.plugin(require('pouchdb-find').default)
 var campaignsdb = new PouchDB('campaigns_database')
 var campaignsremoteDB
 var excavationsdb = new PouchDB('excavations_database')
@@ -19,13 +20,16 @@ function initializedatabases() {
   var newpath = VueCookies.get('path')
   //if (newpath !== null) {
   //  path = newpath
+  //  findsdb.createIndex({
+  //    index: {fields: ['measuring_points.tachymeter_id']}
+  //  })
     campaignsremoteDB = new PouchDB(path + '/campaigns')
     excavationsremoteDB = new PouchDB(path + '/excavations')
     sectionsremoteDB = new PouchDB(path + '/sections')
     structuresremoteDB = new PouchDB(path + '/structures')
     findsremoteDB = new PouchDB(path + '/finds')
     samplesremoteDB = new PouchDB(path + '/samples')
-    syncall()
+    //syncall()
   //}
 }
 

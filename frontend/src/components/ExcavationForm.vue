@@ -2,10 +2,20 @@
   <v-form ref="form">
 
     <v-tabs vertical color="secondary">
+
+      <v-tab> Schnitte</v-tab>
+      <v-tab> Import</v-tab>
       <v-tab> Allgemeine Daten </v-tab>
       <v-tab> Kontaktpersonen</v-tab>
       <v-tab> Kalenderdaten</v-tab>
-      <v-tab> Schnitte</v-tab>
+
+      <v-tab-item>
+        <SectionsOverview :sections="sections"/>
+      </v-tab-item>
+
+      <v-tab-item class="px-4">
+        <PdfComponent/>
+      </v-tab-item>
 
       <v-tab-item class="px-4">
         <v-text-field v-model="excavation_doc.title" label="Bezeichnung *" hint="Geben sie hier die Bezeichnung der Grabung an *(Pflichtfeld)" :rules="is_required" ></v-text-field>
@@ -25,13 +35,10 @@
         <DocContactPersons :persons="excavation_doc.persons"/>
       </v-tab-item>
 
-      <v-tab-item>
-        <SectionsOverview :sections="sections"/>
-      </v-tab-item>
-
 
     <v-btn v-on:click="logForm" color="primary"  class="py-6" tile depressed> Speichern </v-btn>
     <v-btn v-on:click="goBack" color="secondary"  class="py-6" tile depressed> Abbrechen</v-btn>
+
 
    </v-tabs>
     <v-alert v-model="error_dialog" type="error" dense outlined dismissible>
@@ -41,16 +48,18 @@
 </template>
 
 <script>
-import {excavationsdb, campaignsdb, sectionsdb} from '../adress.js'
+import {excavationsdb, campaignsdb, sectionsdb, structuresdb, findsdb} from '../adress.js'
 import VueCookies from 'vue-cookies'
 import DocDates from "./DocDates";
 import DocContactPersons from "./DocContactPersons";
 import SectionsOverview from "./SectionsOverview";
+import PdfComponent from "./PdfComponent";
+import jsPDF from "jspdf";
 
 
 export default {
   name: 'ExcavationForm',
-  components: {DocDates,DocContactPersons,SectionsOverview},
+  components: {PdfComponent, DocDates,DocContactPersons,SectionsOverview},
   data: function () {
     return {
       excavation_doc: {
@@ -65,12 +74,15 @@ export default {
         dates: [],
         persons: []
       },
+      input_file: '',
+      input_text: '',
       excavation_id: '',
       campaign_id: '',
       campaigns: [],
       sections: [],
       error_dialog: false,
       error_message: '',
+      pdf_doc: '',
       is_required: [v => !!v || 'Pflichtfeld']
     }
   },
@@ -82,7 +94,7 @@ export default {
     this.get_sections()
   },
   methods: {
-    get_doc () {
+    get_doc: function() {
       var context = this
       if(context.excavation_id !== 'new') {
         excavationsdb.get(context.excavation_id).then(function (doc) {

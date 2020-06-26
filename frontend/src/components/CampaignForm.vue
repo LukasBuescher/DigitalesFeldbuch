@@ -18,15 +18,12 @@
         <DocContactPersons :persons="campaign_doc.persons"/>
       </v-tab-item>
 
-      <v-tab> Daten </v-tab>
+      <v-tab> Kalenderdaten </v-tab>
       <v-tab-item class="px-4">
         <DocDates :dates="campaign_doc.dates"/>
       </v-tab-item>
 
-      <!--v-tab> Pdf generieren <v-tab>
-      <v-tab-item>
-        <PdfComponent />
-      </v-tab-item-->
+
 
       <v-btn v-on:click="logForm(true)" color="secondary" class="py-6" tile depressed>Speichern</v-btn>
       <v-btn v-on:click="goBack" color="primary"  class="py-6" tile depressed>Abbrechen</v-btn>

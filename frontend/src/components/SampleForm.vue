@@ -74,9 +74,9 @@ export default {
         samplesdb.put(context.sample_doc, function callback(err, result) {
           if (!err) {
             context.$router.push({ name: 'SectionOverview', params: {
-              campaign_id: this.$route.params.campaign_id,
-                excavation_id: this.$route.params.excavation_id,
-                section_id: this.$route.params.section_id }})
+              campaign_id: context.$route.params.campaign_id,
+                excavation_id: context.$route.params.excavation_id,
+                section_id: context.$route.params.section_id }})
           }
         })
       } else {
@@ -85,11 +85,12 @@ export default {
       }
     },
     goBack: function () {
+      let context = this
       this.$router.push({
         name: 'SectionOverview', params: {
-          campaign_id: this.$route.params.campaign_id,
-          excavation_id: this.$route.params.excavation_id,
-          section_id: this.$route.params.section_id }})
+          campaign_id: context.$route.params.campaign_id,
+          excavation_id: context.$route.params.excavation_id,
+          section_id: context.$route.params.section_id }})
     },
     getSections () {
       let context = this

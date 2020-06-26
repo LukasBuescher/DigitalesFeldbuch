@@ -5,13 +5,13 @@
       <v-tab> Typspezifische Daten</v-tab>
       <v-tab> Einschlüsse</v-tab>
       <v-tab> Verbundene Befunde</v-tab>
-      <v-tab v-if="structure_doc.dates_visible">Kalenderdaten </v-tab>
-      <v-tab v-if="structure_doc.measurings_visible">Messpunkte</v-tab>
+      <v-tab> Kalenderdaten </v-tab>
+      <v-tab> Messpunkte</v-tab>
       <v-tab v-if="structure_doc.key_values_visible">Zusatzattribute</v-tab>
-      <v-tab v-if="structure_doc.lengths_visible">Abmessungen</v-tab>
+      <v-tab> Abmessungen</v-tab>
       <v-tab v-if="structure_doc.colors_visible">Farbwerte</v-tab>
       <v-tab v-if="structure_doc.datings_visible">Datierungen</v-tab>
-      <v-tab v-if="structure_doc.images_visible">Bilder</v-tab>
+      <v-tab> Bilder</v-tab>
       <v-tab v-if="structure_doc.connected_objects_visible">Verbindungen</v-tab>
 
       <v-tab-item class="px-4">
@@ -324,9 +324,9 @@ export default {
         structuresdb.put(context.structure_doc, function callback(err, result) {
           if (!err) {
             context.$router.push({ name: 'SectionOverview', params: {
-                campaign_id: this.$route.params.campaign_id,
-                excavation_id: this.$route.params.excavation_id,
-                section_id: this.$route.params.section_id }})
+                campaign_id: context.$route.params.campaign_id,
+                excavation_id: context.$route.params.excavation_id,
+                section_id: context.$route.params.section_id }})
           }
         })
       }else {
@@ -335,11 +335,12 @@ export default {
       }
     },
     goBack: function () {
+      var context = this
       this.$router.push({
         name: 'SectionOverview', params: {
-          campaign_id: this.$route.params.campaign_id,
-          excavation_id: this.$route.params.excavation_id,
-          section_id: this.$route.params.section_id }})
+          campaign_id: context.$route.params.campaign_id,
+          excavation_id: context.$route.params.excavation_id,
+          section_id: context.$route.params.section_id }})
     }
   }
 }

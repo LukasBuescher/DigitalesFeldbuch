@@ -20,8 +20,8 @@
           <v-select v-model="find_doc.section_id" label="Zugehöriger Schnitt *" :items="availableSections" item-value="_id" item-text="title" :rules="is_required" hint=" *(Pflichtfeld)"> </v-select>
           <v-select v-model="find_doc.structure_id" label="Zugehöriger Befund *" :items="availableStructures" item-value="_id" item-text="structurenumber" :rules="is_required" hint="Zugehörigen Befund oder Streufund angeben *(Pflichtfeld)"> </v-select>
           <v-checkbox v-model="find_doc.measured" label="Eingemessen" > </v-checkbox>
-          <v-combobox v-model="find_doc.materials" label="Material *" hint="*(Pflichtfeld)" :items="availableMaterials" :rules="is_required" multiple></v-combobox>
-          <v-combobox v-model="find_doc.types" label="Typen" :items="availableTypes"></v-combobox>
+          <v-combobox v-model="find_doc.materials" label="Materiale *" hint="*(Pflichtfeld)" :items="availableMaterials" :rules="is_required" multiple></v-combobox>
+          <v-combobox v-model="find_doc.types" label="Typ" :items="availableTypes"></v-combobox>
       </v-tab-item>
 
       <v-tab-item class="px-4">
@@ -64,6 +64,7 @@
         <DocImages :images="find_doc.images"/>
       </v-tab-item>
 
+      <v-btn v-on:click="createpdf" class="py-6" tile depressed>Fundzettel</v-btn>
       <v-btn v-on:click="logForm" color="secondary" class="py-6" tile depressed>Speichern</v-btn>
       <v-btn v-on:click="goBack" color="primary"  class="py-6" tile depressed>Abbrechen</v-btn>
       <v-btn @click="bottom_sheet = !bottom_sheet" class="py-6" tile depressed> Optionen</v-btn>
@@ -98,6 +99,7 @@ import DocDatings from "./DocDatings";
 import DocConnectedObjects from "./DocConnectedObjects";
 import DocImages from "./DocImages";
 import {excavationsdb} from "../adress";
+import jsPDF from "jspdf";
 
 
 export default {
@@ -152,11 +154,11 @@ export default {
 
       availableMaterials: [
         'Metall',
-        'Gold',
-        'Silber',
-        'Kupferlegierung',
-        'Blei',
-        'Eisen',
+        'Gold (Metall)',
+        'Silber (Metall)',
+        'Kupferlegierung (Metall)',
+        'Blei (Metall)',
+        'Eisen (Metall)',
         'Unbestimmt',
         'Glas',
         'Stein',
@@ -165,16 +167,16 @@ export default {
         'Organische Reste',
         'Ziegel',
         'Keramik',
-        'Terra Sigillata (TS)',
-        'Glanztonware',
-        'Terra Nigra',
-        'Terra Rubra',
-        'Marmorierte Ware',
-        'Goldglimmerware',
-        'Glasierte Ware',
-        'Backplatten',
-        'Glattwandige Ware',
-        'Rauwandige Ware',
+        'Terra Sigillata (TS) (Keramik)',
+        'Glanztonware (Keramik)',
+        'Terra Nigra (Keramik)',
+        'Terra Rubra  (Keramik)',
+        'Marmorierte Ware (Keramik)',
+        'Goldglimmerware (Keramik)',
+        'Glasierte Ware (Keramik)',
+        'Backplatten (Keramik)',
+        'Glattwandige Ware (Keramik)',
+        'Rauwandige Ware (Keramik)',
         'Schwerkeramik',
         'Amphoren',
         'Frei geformte Ware',
@@ -189,33 +191,119 @@ export default {
       affiliatedMaterial: '',
 
       availableTypes: [
-        'Fibel',
-        'Schmuck',
-        'Münze',
-        'Objekt',
-        'Schlacke',
-        'Militaria',
-        'Gefäß',
-        'Fensterglas',
-        'Nägel',
+        'Anhänger',
+        'Aufhängeöse (Anhänger)',
+        'Backplatte',
+        'Baumaterial',
+        'Becher',
         'Beschläge',
-        'Kugeln',
-        'Randstück (RS)',
-        'Wandstück (WS)',
-        'Bodenstück (BS)',
-        'Henkelstück (HS)',
-        'Deckelstück (DS)',
-        'Amphorenstöpsel',
-        'Werkzeug',
-        'Spielzeug',
-        'Produktionsrückstand',
-        'Wandmalerei',
+        'Blasinstrumente',
+        'Blattform (Anhänger)',
         'Boden',
+        'Bodenstück (BS)',
+        'Deckelstück (DS)',
+        'Dolch (Militaria)',
+        'Dolie',
+        'Doppelter Ösenknopf',
+        'Dreibein',
+        'Dreiblattform (Anhänger)',
+        'Einfacher Ösenknopf',
+        'Fensterglas',
+        'Fibel',
+        'Fragment (Anhänger)',
+        'Gefäß',
+        'Geflügelte Form (Anhänger)',
+        'Geschossbolzen (Militaria)',
+        'Gürtel',
+        'Gürtelblech',
+        'Gürtelschnalle',
+        'Helm (Militaria)',
+        'Helmbeschlag (Militaria)',
+        'Henkelstück (HS)',
+        'Honigtopf',
+        'Kasserolle',
+        'Kelle',
+        'Kettenpanzer (Militaria)',
+        'Knopf',
+        'Knopfniete',
+        'Knopfschliessen',
+        'Kochnapf',
+        'Kochschüssel',
+        'Krug',
+        'Kugeln',
+        'Lampe',
+        'Lanzettform (Anhänger)',
+        'Lunulaform (Anhänger)',
+        'Metallzaum (Zaumzeugteile)',
+        'Militaria',
         'Mosaik',
-        'Statuette',
+        'Mundstück',
+        'Münze',
+        'Nägel',
+        'Napf',
+        'Objekt',
+        'Oval, Querriegel, Öse (Anhänger)',
+        'Panzerhaken (Militaria)',
+        'Panzerniete (Militaria)',
+        'Panzerscharnier (Militaria)',
+        'Panzerschnalle (Militaria)',
+        'Panzerschuppe (Militaria)',
+        'Peltaform (Anhänger)',
+        'Pfeil (Militaria)',
+        'Pferdegeschirr',
+        'Phalere (Zaumzeugteile)',
+        'Phallusform (Anhänger)',
+        'Pilum (Militaria)',
+        'Pilumspitze (Militaria)',
+        'Pilumzwinge (Militaria)',
         'Plastik',
+        'Produktionsrückstand',
+        'Randstück (RS)',
+        'Reibschüssel',
+        'Reiterausrüstung',
+        'Riemenbeschlag (Zaumzeugteile)',
+        'Riemenendbeschwerer (Zaumzeugteile)',
+        'Riemenhaken (Zaumzeugteile)',
+        'Riemenöse (Zaumzeugteile)',
+        'Riemenschleife (Zaumzeugteile)',
+        'Riemenschurz',
+        'Riemenschurz (Militaria)',
+        'Riementüllen (Militaria)',
         'Rohr',
-        'Baumaterial'
+        'Sattelgurtbeschlag',
+        'Sattelgurtschnalle (Sattelteile)',
+        'Sattelteile',
+        'Scheide (Militaria)',
+        'Schienenpanzer (Militaria)',
+        'Schild (Militaria)',
+        'Schildbeschlag (Militaria)',
+        'Schildbuckel (Militaria)',
+        'Schlacke',
+        'Schmuck',
+        'Schnalle',
+        'Schnallendorn',
+        'Schulterbecher/-topf',
+        'Schuppenpanzer (Militaria)',
+        'Schurzanhänger (Militaria)',
+        'Schurzbeschläge (Militaria)',
+        'Schüssel',
+        'Schwert (Militaria)',
+        'Signalinstrument',
+        'Sonderform (Anhänger)',
+        'Spannbuchse (Militaria)',
+        'Speer (Militaria)',
+        'Speerschuh (Militaria)',
+        'Sperrspitzen (Militaria)',
+        'Spielzeug',
+        'Sporen',
+        'Statuette',
+        'Teller',
+        'Tonne',
+        'Trense (Zaumzeugteile)',
+        'Tropfenform (Anhänger)',
+        'Wandmalerei',
+        'Wandstück (WS)',
+        'Werkzeug',
       ],
       availableStructures: [],
       availableSections: [],
@@ -305,6 +393,24 @@ export default {
       if (VueCookies.get("lastUsedMaterial2") != null) context.lastUsedMaterials.push(VueCookies.get("lastUsedMaterial2"))
       if (VueCookies.get("lastUsedMaterial3") != null) context.lastUsedMaterials.push(VueCookies.get("lastUsedMaterial3"))
     },
+    createpdf () {
+      var context = this
+      this.pdf_doc = new jsPDF()
+      this.pdf_doc.text('Datum: ' + this.find_doc.dates[0].date, 20, 20)
+      this.pdf_doc.text('Bearbeiter/in: Max Mustermann', 20, 30)
+      this.pdf_doc.text('Fundnummer: ' + this.find_doc.findnumber, 20, 40)
+      this.pdf_doc.text('Material: ' + this.find_doc.materials[0], 20, 50)
+      if(context.find_doc.structure_id === 'Streufund'){
+        this.pdf_doc.text("Zugehörige SE: Streufund", 20, 60);
+      }else{
+        structuresdb.get(context.doc.structure_id).then(function (structure_doc) {
+          context.pdf_doc.text("Sugehörige SE: "+ structure_doc.structurenumber, 20, 60)
+        }).catch(function (err) {
+          console.log(err)
+        })
+      }
+      this.pdf_doc.save('Fundzettel.pdf')
+    },
 
     logForm: function () {
       this.error_message = ' '
@@ -319,13 +425,13 @@ export default {
         this.error_message = this.error_message.concat('Bitte einen Messpunkt anfügen')
         this.error_dialog = true
       }
-      if (this.find_doc.lengths.length === 0){
-        if(this.error_message !== '') {
-          this.error_message = this.error_message.concat('; ')
-        }
-        this.error_message = this.error_message.concat('Bitte Abmessungen (Länge/Breite) anfügen')
-        this.error_dialog = true
-      }
+      //if (this.find_doc.lengths.length === 0){
+      //  if(this.error_message !== '') {
+      //    this.error_message = this.error_message.concat('; ')
+      //  }
+      //  this.error_message = this.error_message.concat('Bitte Abmessungen (Länge/Breite) anfügen')
+      //  this.error_dialog = true
+      //}
       if(this.error_dialog === false) {
         if ((this.affiliatedMaterial !== '') && (this.affiliatedMaterial !== VueCookies.get("lastUsedMaterial1"))
           && (this.affiliatedMaterial !== VueCookies.get("lastUsedMaterial2")) && (this.affiliatedMaterial !== VueCookies.get("lastUsedMaterial3"))) {
@@ -348,9 +454,9 @@ export default {
         findsdb.put(this.find_doc, function callback(err, result) {
           if (!err) {
             context.$router.push({ name: 'SectionOverview', params: {
-                campaign_id: this.$route.params.campaign_id,
-                excavation_id: this.$route.params.excavation_id,
-                section_id: this.$route.params.section_id }})
+                campaign_id: context.$route.params.campaign_id,
+                excavation_id: context.$route.params.excavation_id,
+                section_id: context.$route.params.section_id }})
           }
         })
       }

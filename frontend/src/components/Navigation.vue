@@ -16,11 +16,11 @@
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item v-on:click="bottom_sheet = !bottom_sheet">
+      <!--v-list-item v-on:click="bottom_sheet = !bottom_sheet">
         <v-list-item-title>
           Datenbank
         </v-list-item-title>
-      </v-list-item>
+      </v-list-item-->
     </v-navigation-drawer>
     <v-bottom-sheet v-model="bottom_sheet">
       <v-sheet>

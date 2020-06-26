@@ -10,7 +10,7 @@
         <v-card-text>
           <v-text-field v-model="new_person.name" label="Name"> </v-text-field>
           <v-text-field v-model="new_person.purpose" label="Rolle"></v-text-field>
-          <v-text-field v-model="new_person.email" :rules="emailRegeln" label="Email"></v-text-field>
+          <v-text-field v-model="new_person.email"  label="Email"></v-text-field>
           <v-text-field v-model="new_person.phone" label="Telefonnummer"></v-text-field>
         </v-card-text>
         <v-card-actions>
@@ -35,10 +35,7 @@
           ],
           selected_person: [],
           new_person: {name: '', purpose: '', email: '', phone: ''},
-          persons_overlay: false,
-          emailRegeln: [
-            v => /.+@.+\..+/.test(v) || 'Ungültige E-mail',
-          ]
+          persons_overlay: false
         }
       },
       props: {

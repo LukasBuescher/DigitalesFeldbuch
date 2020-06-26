@@ -52,9 +52,9 @@
             id: this.selected_measuring_point[0].id,
             tachymeter_id: this.selected_measuring_point[0].tachymeter_id,
             title: this.selected_measuring_point[0].title,
-            easting: this.selected_measuring_point[0].easting,
-            northing: this.selected_measuring_point[0].northing,
-            height: this.selected_measuring_point[0].height,
+            x: this.selected_measuring_point[0].x,
+            y: this.selected_measuring_point[0].y,
+            z: this.selected_measuring_point[0].z,
             edit: true
           }
           this.measuring_point_overlay = true
