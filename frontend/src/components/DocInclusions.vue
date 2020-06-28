@@ -13,7 +13,7 @@
           </v-card-text>
           <v-card-actions class="justify-center">
             <v-btn v-on:click="confirm_inclusion" color="secondary">Bestätigen</v-btn>
-            <v-btn @click="inclucions_overlay = false" color="primary">Abbrechen</v-btn>
+            <v-btn @click="inclusions_overlay = false" color="primary">Abbrechen</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>

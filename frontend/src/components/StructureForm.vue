@@ -1,19 +1,8 @@
 <template>
   <v-form ref="form">
     <v-tabs vertical color="secondary">
-      <v-tab> Allgemeine Daten </v-tab>
-      <v-tab> Typspezifische Daten</v-tab>
-      <v-tab> Einschlüsse</v-tab>
-      <v-tab> Verbundene Befunde</v-tab>
-      <v-tab> Kalenderdaten </v-tab>
-      <v-tab> Messpunkte</v-tab>
-      <v-tab v-if="structure_doc.key_values_visible">Zusatzattribute</v-tab>
-      <v-tab> Abmessungen</v-tab>
-      <v-tab v-if="structure_doc.colors_visible">Farbwerte</v-tab>
-      <v-tab v-if="structure_doc.datings_visible">Datierungen</v-tab>
-      <v-tab> Bilder</v-tab>
-      <v-tab v-if="structure_doc.connected_objects_visible">Verbindungen</v-tab>
 
+      <v-tab> Allgemeine Daten </v-tab>
       <v-tab-item class="px-4">
           <v-text-field v-model="structure_doc.structurenumber" label="Befundnummer*(Pflichtfeld)" :rules="is_required"  hint="Geben sie hier die Befundnummer ein"></v-text-field>
           <v-text-field v-model="structure_doc.structurename" label="Kurzansprache" hint="Geben sie hier die Kurzansprache des Befundes an"></v-text-field>
@@ -29,6 +18,8 @@
           </v-radio-group>
       </v-tab-item>
 
+
+      <v-tab> Typspezifische Daten</v-tab>
       <v-tab-item class="px-4">
         <div v-if="structure_doc.structure_type === 'stratigraphical'">
           <v-textarea v-model="structure_doc.extension" label="Ausdehnung" hint="Geben sie hier die Dimensionen des Befundes an"></v-textarea>
@@ -82,46 +73,54 @@
         </div>
       </v-tab-item>
 
+
+      <v-tab> Einschlüsse</v-tab>
       <v-tab-item class="px-4">
         <DocInclusions :inclusions="structure_doc.inclusions"/>
       </v-tab-item>
 
+      <v-tab> Verbundene Befunde</v-tab>
       <v-tab-item class="px-4">
         <v-subheader v-if="$route.params.structure_id === 'new'"> Befunde können erst nach dem speichern verbunden werden </v-subheader>
         <DocMatrix v-else :matrix="structure_doc.matrix"/>
       </v-tab-item>
 
+      <v-tab> Kalenderdaten </v-tab>
       <v-tab-item class="px-4">
         <DocDates :dates="structure_doc.dates"/>
       </v-tab-item>
 
+      <v-tab> Bilder </v-tab>
+      <v-tab-item class="px-4">
+        <DocImages :images="structure_doc.images" />
+      </v-tab-item>
+
+      <v-tab> Abmessungen</v-tab>
+      <v-tab-item class="px-4">
+        <DocLengths :lengths="structure_doc.lengths"/>
+      </v-tab-item>
+
+      <v-tab> Messpunkte</v-tab>
       <v-tab-item class="px-4">
         <DocMeasurings :measuring_points="structure_doc.measuring_points"/>
       </v-tab-item>
 
-      <v-tab-item v-if="structure_doc.key_values_visible" class="px-4">
-        <DocKeyValues :key_values="structure_doc.key_values"/>
-      </v-tab-item>
-
-      <v-tab-item class="px-4">
-        <DocLengths :lengts="structure_doc.lengths"/>
-      </v-tab-item>
-
+      <v-tab> Farbwerte</v-tab>
       <v-tab-item class="px-4">
         <DocColors :colors="structure_doc.colors"/>
       </v-tab-item>
 
+      <v-tab v-if="structure_doc.datings_visible">Datierung</v-tab>
       <v-tab-item v-if="structure_doc.datings_visible" class="px-4">
         <DocDatings :dating="structure_doc.dating" />
       </v-tab-item>
 
-      <v-tab-item v-if="structure_doc.connected_objects_visible" class="px-4">
-        <DocConnectedObjects :connected_objects="structure_doc.connected_objects" />
+
+      <v-tab v-if="structure_doc.key_values_visible">Zusatzattribute</v-tab>
+      <v-tab-item v-if="structure_doc.key_values_visible" class="px-4">
+        <DocKeyValues :key_values="structure_doc.key_values"/>
       </v-tab-item>
 
-      <v-tab-item class="px-4">
-        <DocImages :images="structure_doc.images" />
-      </v-tab-item>
 
     <v-btn v-on:click="logForm" color="secondary" class="py-6" tile depressed>Speichern</v-btn>
     <v-btn v-on:click="goBack" color="primary"  class="py-6" tile depressed>Abbrechen</v-btn>
@@ -134,7 +133,6 @@
         <v-row justify="space-around">
           <v-checkbox v-model="structure_doc.key_values_visible" label="Zusatzattribute"></v-checkbox>
           <v-checkbox v-model="structure_doc.datings_visible" label="Datierungen"></v-checkbox>
-          <v-checkbox v-model="structure_doc.connected_objects_visible" label="Verbindungen"></v-checkbox>
         </v-row>
       </v-sheet>
     </v-bottom-sheet>
@@ -227,7 +225,6 @@ export default {
 
         key_values_visible: false,
         datings_visible: false,
-        connected_objects_visible: false,
 
         matrix: {
           lies_on: '',
@@ -253,7 +250,6 @@ export default {
         lengths: [],
         images: [],
         colors: [],
-        connected_objects: [],
         measuring_points: [],
         key_values: [],
       },

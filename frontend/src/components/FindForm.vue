@@ -6,10 +6,6 @@
         <v-tab>Abmessungen</v-tab>
         <v-tab>Interpretation</v-tab>
         <v-tab>Kalenderdaten </v-tab>
-        <v-tab v-if="find_doc.key_values_visible">Zusatzattribute</v-tab>
-        <v-tab v-if="find_doc.colors_visible">Farbwerte</v-tab>
-        <v-tab v-if="find_doc.datings_visible">Datierungen</v-tab>
-        <v-tab v-if="find_doc.connected_objects_visible">Verbindungen</v-tab>
         <v-tab>Bilder</v-tab>
 
       <v-tab-item class="px-4">
@@ -43,26 +39,30 @@
         <DocDates :dates="find_doc.dates"/>
       </v-tab-item>
 
+      <v-tab-item class="px-4">
+        <DocImages :images="find_doc.images"/>
+      </v-tab-item>
+
+      <v-tab v-if="find_doc.key_values_visible">Zusatzattribute</v-tab>
       <v-tab-item v-if="find_doc.key_values_visible" class="px-4">
         <DocKeyValues :key_values="find_doc.key_values"/>
       </v-tab-item>
 
-
-      <v-tab-item class="px-4">
+      <v-tab v-if="find_doc.colors_visible">Farbwerte</v-tab>
+      <v-tab-item v-if="find_doc.colors_visible" class="px-4">
         <DocColors :colors="find_doc.colors"/>
       </v-tab-item>
 
+      <v-tab v-if="find_doc.datings_visible">Datierungen</v-tab>
       <v-tab-item v-if="find_doc.datings_visible" class="px-4">
         <DocDatings :dating="find_doc.dating"/>
       </v-tab-item>
 
+      <v-tab v-if="find_doc.connected_objects_visible">Verbindungen</v-tab>
       <v-tab-item v-if="find_doc.connected_objects_visible" class="px-4">
         <DocConnectedObjects :connected_objects="find_doc.connected_objects"/>
       </v-tab-item>
 
-      <v-tab-item class="px-4">
-        <DocImages :images="find_doc.images"/>
-      </v-tab-item>
 
       <v-btn v-on:click="createpdf" class="py-6" tile depressed>Fundzettel</v-btn>
       <v-btn v-on:click="logForm" color="secondary" class="py-6" tile depressed>Speichern</v-btn>
