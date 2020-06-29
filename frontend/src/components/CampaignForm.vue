@@ -4,6 +4,7 @@
       <v-tab> Allgemeine Daten </v-tab>
       <v-tab-item class="px-4">
         <v-text-field v-model="campaign_doc.title" label="Bezeichnung *" hint="Geben sie hier die Bezeichnung des Projektes an *(Pflichtfeld)":rules="is_required"  ></v-text-field>
+        <v-text-field v-model="campaign_doc.utm_zone" label="UTM Zone" ></v-text-field>
         <v-textarea v-model="campaign_doc.description" label="Beschreibung" hint="Geben sie hier eine kurze Beschreibung des Projektes an (Ziele, Foki etc.)"></v-textarea>
       </v-tab-item>
 
@@ -53,6 +54,7 @@
           _id: new Date().toISOString(),
           title: '',
           description: '',
+          utm_zone: '',
           persons: [],
           dates: []
         },
