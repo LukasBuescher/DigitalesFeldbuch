@@ -3,20 +3,7 @@
 
     <v-tabs vertical color="secondary">
 
-      <v-tab> Schnitte</v-tab>
-      <v-tab> Import</v-tab>
       <v-tab> Allgemeine Daten </v-tab>
-      <v-tab> Kontaktpersonen</v-tab>
-      <v-tab> Kalenderdaten</v-tab>
-
-      <v-tab-item>
-        <SectionsOverview :sections="sections"/>
-      </v-tab-item>
-
-      <v-tab-item class="px-4">
-        <PdfComponent/>
-      </v-tab-item>
-
       <v-tab-item class="px-4">
         <v-text-field v-model="excavation_doc.title" label="Bezeichnung *" hint="Geben sie hier die Bezeichnung der Grabung an *(Pflichtfeld)" :rules="is_required" ></v-text-field>
         <v-textarea v-model="excavation_doc.description" label="Beschreibung" hint="Geben sie hier eine kurze Beschreibung des Projektes an"></v-textarea>
@@ -27,12 +14,25 @@
         <v-select v-model="excavation_doc.campaign_id" :items="campaigns" item-text="title" item-value="_id" label="Zugehörige Grabung"> </v-select>
       </v-tab-item>
 
+
+      <v-tab> Schnitte</v-tab>
+      <v-tab-item>
+        <SectionsOverview :sections="sections"/>
+      </v-tab-item>
+
+      <v-tab> Kalenderdaten</v-tab>
       <v-tab-item>
         <DocDates :dates="excavation_doc.dates"/>
       </v-tab-item>
 
+      <v-tab> Kontaktpersonen</v-tab>
       <v-tab-item>
         <DocContactPersons :persons="excavation_doc.persons"/>
+      </v-tab-item>
+
+      <v-tab> Import</v-tab>
+      <v-tab-item class="px-4">
+        <PdfComponent/>
       </v-tab-item>
 
 
