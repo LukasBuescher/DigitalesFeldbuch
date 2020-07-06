@@ -143,7 +143,7 @@ export default {
         VueCookies.set('excavationTab', 0)
         excavationsdb.put(this.excavation_doc, function callback(err, result) {
           if (!err) {
-            context.$router.push({name: 'CampaignForm', params: { campaign_id: context.campaign_id}})
+            context.$router.push({name: 'CampaignCreation', params: { campaign_id: context.campaign_id}})
           }
         })
       } else {
