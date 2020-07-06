@@ -1,30 +1,35 @@
 <template>
   <v-form ref="form">
     <v-tabs vertical color="secondary">
-      <v-tab> Allgemeine Daten </v-tab>
-      <v-tab> Kontaktpersonen</v-tab>
-      <v-tab> Messpunkte </v-tab>
-      <v-tab> Abmessungen </v-tab>
-      <v-tab> Bilder </v-tab>
 
+      <v-tab> Allgemeine Daten </v-tab>
       <v-tab-item class="px-4">
         <v-text-field v-model="section_doc.title" label="Schnittname *" hint="Geben Sie die Bezeichnung des Schnitts ein *(Pflichtfeld)" :rules="is_required" ></v-text-field>
         <v-textarea v-model="section_doc.description" label="Beschreibung"></v-textarea>
         <v-select v-model="section_doc.excavation_id" label="Grabung *" hint="*(Pflichtfeld)" :rules="is_required" :items="availableExcavations" item-text="title" item-value="_id"> </v-select>
       </v-tab-item>
 
+      <v-tab> Kontaktpersonen </v-tab>
+      <v-tab-item class="px-4">
+        <DocContactPersons :persons="section_doc.persons"/>
+      </v-tab-item>
+
+      <v-tab> Kalenderdaten </v-tab>
       <v-tab-item class="px-4">
         <DocDates :dates="section_doc.dates"/>
       </v-tab-item>
 
+      <v-tab> Messpunkte </v-tab>
       <v-tab-item class="px-4">
         <DocMeasuringPoints :measuring_points="section_doc.measuring_points"/>
       </v-tab-item>
 
+      <v-tab> Abmessungen </v-tab>
       <v-tab-item class="px-4">
         <DocLengths :lengths="section_doc.lengths"/>
       </v-tab-item>
 
+      <v-tab> Bilder </v-tab>
       <v-tab-item class="px-4">
         <DocImages :images="section_doc.images" />
       </v-tab-item>
@@ -46,11 +51,12 @@ import DocDates from "./DocDates";
 import DocMeasuringPoints from "./DocMeasuringPoints";
 import DocImages from "./DocImages";
 import VueCookies from "vue-cookies";
+import DocContactPersons from "./DocContactPersons";
 
 export default {
   name: 'SectionCreation',
   components: {
-    DocDates, DocMeasuringPoints, DocLengths, DocImages
+    DocDates, DocMeasuringPoints, DocContactPersons, DocLengths, DocImages
   },
   data: function () {
     return {
