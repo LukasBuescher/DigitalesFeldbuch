@@ -4,6 +4,7 @@
 npm install -g vue-cli
 
 # Cordova installieren (Framework um aus JS/HTML/CSS Androidtaugliche Hybrid-Apps zu bauen )
+Um ein Android-apk der App zu erzeugen wird [Cordova](https://cordova.apache.org/docs/en/9.x/guide/platforms/android/index.html) benötigt.
 npm install -g cordova
 
 # Android SDK installieren
